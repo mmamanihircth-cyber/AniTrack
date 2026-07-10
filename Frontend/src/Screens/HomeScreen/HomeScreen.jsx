@@ -55,10 +55,33 @@ export const HomeScreen = () => {
 
         <div className="header-user">
           {isLogged ? (
-            <>
-              <span className="username">@{userData?.nombre || "usuario"}</span>
-              <button className="btn-logout" onClick={handleLogout}>Cerrar sesión</button>
-            </>
+             <>
+
+      <div 
+        className="profile-link"
+        onClick={() => navigate('/profile')}
+      >
+
+        <div className="profile-mini-avatar">
+          {userData?.nombre?.charAt(0).toUpperCase()}
+        </div>
+
+
+        <span className="username">
+          @{userData?.nombre || "usuario"}
+        </span>
+
+      </div>
+
+
+      <button 
+        className="btn-logout" 
+        onClick={handleLogout}
+      >
+        Cerrar sesión
+      </button>
+
+    </>
           ) : (
             <div className="auth-buttons-group">
               <button className="btn-login-header" onClick={() => navigate('/login')}>
