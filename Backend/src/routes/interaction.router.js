@@ -42,4 +42,14 @@ interactionRouter.get('/list', (req, res, next) => {
     return interactionController.getMyList(req, res, next);
 });
 
+// 8. AGREGAR O QUITAR FAVORITO
+interactionRouter.post('/favorite', (req, res, next) => {
+    return interactionController.toggleFavorite(req, res, next);
+});
+
+// 9. OBTENER MIS FAVORITOS
+interactionRouter.get('/favorite', (req, res, next) => {
+    return interactionController.getMyFavorites(req, res, next);
+});
+
 export default interactionRouter;

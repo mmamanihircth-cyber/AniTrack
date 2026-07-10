@@ -1,7 +1,8 @@
-import React, { useContext, useState, useRef  } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { AuthContext } from '../../context/AuthContext'
 import { MIS_ANIMES } from '../../Data/animes'
+import { toggleFavorite, getFavorites, addOrUpdateInList} from "../../services/interaction.service";
 import './AnimeDetailScreen.css'
 
 export const AnimeDetailScreen = () => {
@@ -39,7 +40,31 @@ export const AnimeDetailScreen = () => {
 
     const [reviewText, setReviewText] = useState("");
 
-    
+    useEffect(() => {
+
+    if (!isLogged) return;
+
+    async function loadFavorites() {
+
+        try {
+
+            const response = await getFavorites();
+
+            const existe = response.data.favoritos.some(
+    favorito => Number(favorito.anime_id) === Number(anime.id)
+);
+
+            setFavorite(existe);
+
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
+    loadFavorites();
+
+}, [anime.id, isLogged]);
 
     const increaseEpisodes = () => {
     if (totalEpisodes === null) {
@@ -79,7 +104,38 @@ const decreaseEpisodes = () => {
     dropped: "Dropped"
 };
 
+const handleFavorite = async () => {
 
+    try {
+
+        const data = await toggleFavorite(anime.id);
+
+        setFavorite(response.favorite);
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+};
+const handleStatusChange = async (event) => {
+
+    const nuevoEstado = event.target.value;
+
+    setUserStatus(nuevoEstado);
+
+    try {
+
+        await addOrUpdateInList(anime.id, nuevoEstado);
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+};
 
 function handlePublishReview() {
 
@@ -277,7 +333,7 @@ function handlePublishReview() {
     <select
         className={`status-select ${userStatus}`}
         value={userStatus}
-        onChange={(e) => setUserStatus(e.target.value)}
+        onChange={handleStatusChange}
     >
         <option value="watching">Watching</option>
         <option value="completed">Completed</option>
@@ -339,17 +395,17 @@ function handlePublishReview() {
             <label>Favorite</label>
 
             <button
-                className={
-                    favorite
-                        ? "favorite-btn active"
-                        : "favorite-btn"
-                }
-                onClick={() => setFavorite(!favorite)}
-            >
-                {favorite
-                    ? "❤ Added"
-                    : "♡ Add"}
-            </button>
+    className={
+        favorite
+            ? "favorite-btn active"
+            : "favorite-btn"
+    }
+    onClick={handleFavorite}
+>
+    {favorite
+        ? "❤ Added"
+        : "♡ Add"}
+</button>
 
         </div>
 

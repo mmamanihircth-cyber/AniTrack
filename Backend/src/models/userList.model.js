@@ -14,9 +14,13 @@ const userListSchema = new mongoose.Schema(
         },
         estado: {
             type: String,
-            enum: ['viendo', 'completado', 'planeado', 'drop'], // Tus estados de seguimiento
+            enum: ["watching","completed", "plan", "paused", "dropped"], // Tus estados de seguimiento
             required: true,
             default: 'planeado'
+        },
+        favorito: {
+            type: Boolean,
+            default: false
         },
         fecha_agregado: {
             type: Date,

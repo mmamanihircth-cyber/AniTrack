@@ -129,30 +129,113 @@ class InteractionController {
 
     // 5. AGREGAR O ACTUALIZAR ESTADO EN MI LISTA PERSONAL
     async addOrUpdateInList(request, response) {
-        try {
-            const usuario_id = request.user.id;
-            const { anime_id, estado } = request.body; // anime_id acá también viene como String del Front
+    try {
+        const usuario_id = request.user.id;
+        const { anime_id, estado } = request.body;
 
-            if (!anime_id || !estado) throw new ServerError("Faltan campos obligatorios", 400);
+        if (!anime_id || !estado) {
+            throw new ServerError("Faltan campos obligatorios", 400);
+        }
 
-            const itemLista = await UserList.findOneAndUpdate(
-                { usuario_id, anime_id },
-                { estado },
-                { new: true, upsert: true }
-            );
+        let itemLista = await UserList.findOne({
+            usuario_id,
+            anime_id
+        });
 
-            return response.status(200).json({
+        if (!itemLista) {
+
+            itemLista = await UserList.create({
+                usuario_id,
+                anime_id,
+                estado
+            });
+
+        } else {
+
+            itemLista.estado = estado;
+
+            await itemLista.save();
+
+        }
+
+        return response.status(200).json({
+            ok: true,
+            message: `Anime guardado en tu lista como: ${estado}`,
+            data: { itemLista }
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return response.status(500).json({
+            ok: false,
+            message: "Error al actualizar tu lista"
+        });
+
+    }
+}
+    // 6. AGREGAR O QUITAR FAVORITO
+async toggleFavorite(request, response) {
+    try {
+
+        const usuario_id = request.user.id;
+        const { anime_id } = request.body;
+
+        if (!anime_id) {
+            throw new ServerError("El ID del anime es obligatorio", 400);
+        }
+
+        let itemLista = await UserList.findOne({
+            usuario_id,
+            anime_id
+        });
+
+        // Si no existe, lo agregamos automáticamente a la lista
+        if (!itemLista) {
+
+            itemLista = await UserList.create({
+                usuario_id,
+                anime_id,
+                estado: "PLAN_TO_WATCH",
+                favorito: true
+            });
+
+            return response.status(201).json({
                 ok: true,
-                message: `Anime guardado en tu lista como: ${estado}`,
+                favorite: true,
+                message: "Anime agregado a favoritos",
                 data: { itemLista }
             });
-        } catch (error) {
-            console.error(error);
-            return response.status(500).json({ ok: false, message: "Error al actualizar tu lista" });
-        }
-    }
 
-    // 6. OBTENER MI LISTA PERSONAL DE ANIMES (Sin populate por el cambio de estrategia)
+        }
+
+        // Si existe, invertimos el estado del favorito
+        itemLista.favorito = !itemLista.favorito;
+
+        await itemLista.save();
+
+        return response.status(200).json({
+            ok: true,
+            favorite: itemLista.favorito,
+            message: itemLista.favorito
+                ? "Anime agregado a favoritos"
+                : "Anime eliminado de favoritos",
+            data: { itemLista }
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return response.status(500).json({
+            ok: false,
+            message: "Error al actualizar favoritos"
+        });
+
+    }
+}
+// 7. OBTENER MI LISTA PERSONAL DE ANIMES (Sin populate por el cambio de estrategia)
     async getMyList(request, response) {
         try {
             const usuario_id = request.user.id;
@@ -169,8 +252,37 @@ class InteractionController {
             return response.status(500).json({ ok: false, message: "Error al obtener tu lista" });
         }
     }
+// 7. OBTENER MIS FAVORITOS
+async getMyFavorites(request, response) {
 
-    // 7. NUEVO MÉTODO: OBTENER COMENTARIOS CON LA INFO DEL USUARIO PEGADA (Populate)
+    try {
+
+        const usuario_id = request.user.id;
+
+        const favoritos = await UserList.find({
+            usuario_id,
+            favorito: true
+        });
+
+        return response.status(200).json({
+            ok: true,
+            data: { favoritos }
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return response.status(500).json({
+            ok: false,
+            message: "Error al obtener favoritos"
+        });
+
+    }
+
+}
+
+    // 8. NUEVO MÉTODO: OBTENER COMENTARIOS CON LA INFO DEL USUARIO PEGADA (Populate)
     async getReviewsByAnime(request, response) {
         try {
             const { anime_front_id } = request.params;

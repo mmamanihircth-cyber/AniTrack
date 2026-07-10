@@ -1,9 +1,10 @@
 .profile-header {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Cambialo a 'center' si preferís que el botón quede centrado */
+    align-items: start; /* Cambialo a 'center' si preferís que el botón quede centrado */
     gap: 15px;               /* El espacio exacto entre el botón y el título */
-    margin-bottom: 30px;     /* Espacio abajo antes de la tarjeta del usuario */
+    margin-bottom: 30px; 
+    padding-left: 25px;    /* Espacio abajo antes de la tarjeta del usuario */
 }
 
 .profile-back-btn {

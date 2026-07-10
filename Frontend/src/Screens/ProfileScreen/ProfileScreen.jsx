@@ -1,14 +1,35 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import "./ProfileScreen.css";
 import { useNavigate } from "react-router";
+import { getFavorites } from "../../services/interaction.service";
+import "./ProfileScreen.css";
 
 const ProfileScreen = () => {
 
     const navigate = useNavigate();
-
+    const [favorites, setFavorites] = useState([]);
     const { userData, logout } = useContext(AuthContext);
+    useEffect(() => {
 
+    async function loadFavorites() {
+
+        try {
+
+            const response = await getFavorites();
+
+            setFavorites(response.data.favoritos);
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+    loadFavorites();
+
+}, []);
     return (
         <main className="profile-page">
 
@@ -38,7 +59,7 @@ const ProfileScreen = () => {
                 <div className="profile-stats">
 
     <div className="stat-card">
-        <h3>0</h3>
+        <h3>{favorites.length}</h3>
         <span>Favoritos</span>
     </div>
 
@@ -58,6 +79,33 @@ const ProfileScreen = () => {
     </div>
 
 </div>
+
+<div className="profile-favorites">
+
+        <h2>Mis Favoritos</h2>
+
+        {
+            favorites.length === 0
+            ? (
+                <p>No tienes animes favoritos todavía.</p>
+            )
+            : (
+                favorites.map(favorite => (
+
+                    <div
+                        key={favorite._id}
+                        className="favorite-card"
+                    >
+
+                        {favorite.anime_id}
+
+                    </div>
+
+                ))
+            )
+        }
+
+    </div>
 
 <div className="profile-info-card">
 
