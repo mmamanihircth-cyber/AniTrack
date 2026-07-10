@@ -361,25 +361,26 @@ class AuthController {
     }
 
     async profile(request, response) {
-        try {
-            // El middleware ya guardó los datos del usuario acá:
-            const user = request.user; 
+    try {
+        const user = request.user; 
 
-            return response.status(200).json({
-                ok: true,
-                message: "Perfil obtenido con éxito",
-                user: {
-                    id: user.id,
-                    email: user.email
-                }
-            });
-        } catch (error) {
-            return response.status(500).json({ 
-                ok: false, 
-                message: "Error interno al obtener el perfil" 
-            });
-        }
+        return response.status(200).json({
+            ok: true,
+            message: "Perfil obtenido con éxito",
+            user: {
+                id: user.id,
+                email: user.email
+                // Si esto rompe, es porque 'user' viene vacío o no tiene .id/.email
+            }
+        });
+    } catch (error) {
+        // Cambiamos esto temporalmente para que Postman nos confiese el error real:
+        return response.status(500).json({ 
+            ok: false, 
+            message: error.message 
+        });
     }
+}
 }
 
 const authController = new AuthController();
