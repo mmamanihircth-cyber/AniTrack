@@ -23,6 +23,90 @@ const ProfileScreen = () => {
 
                 </div>
 
+                <div className="profile-stats">
+
+    <div className="stat-card">
+        <h3>0</h3>
+        <span>Favoritos</span>
+    </div>
+
+    <div className="stat-card">
+        <h3>0</h3>
+        <span>Watching</span>
+    </div>
+
+    <div className="stat-card">
+        <h3>0</h3>
+        <span>Completados</span>
+    </div>
+
+    <div className="stat-card">
+        <h3>0</h3>
+        <span>Reviews</span>
+    </div>
+
+</div>
+
+<div className="profile-info-card">
+
+    <h2>
+        Información
+    </h2>
+
+
+    <div className="info-row">
+
+        <span>Nombre</span>
+
+        <strong>
+            {userData?.nombre}
+        </strong>
+
+    </div>
+
+
+    <div className="info-row">
+
+        <span>Email</span>
+
+        <strong>
+            {userData?.email}
+        </strong>
+
+    </div>
+
+
+    <div className="info-row">
+
+        <span>Fecha de creación</span>
+
+        <strong>
+            {userData?.fecha_creacion}
+        </strong>
+
+    </div>
+
+
+    <div className="info-row">
+
+        <span>ID Usuario</span>
+
+        <strong>
+            {userData?.id}
+        </strong>
+
+    </div>
+
+
+</div>
+
+<button 
+    className="profile-logout-btn"
+    onClick={logout}
+>
+    Cerrar sesión
+</button>
+
             </section>
 
         </main>
