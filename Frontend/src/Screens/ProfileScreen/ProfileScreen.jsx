@@ -14,16 +14,18 @@ const ProfileScreen = () => {
 
             <section className="profile-container">
 
-                <button 
-    className="profile-back-btn"
-    onClick={() => navigate('/home')}
->
-    ← Home
-</button>
+                <div className="profile-header">
+        <button 
+            className="profile-back-btn"
+            onClick={() => navigate('/home')}
+        >
+            ← Home
+        </button>
 
-                <h1 className="profile-title">
-                    Mi Perfil
-                </h1>
+        <h1 className="profile-title">
+            Mi Perfil
+        </h1>
+    </div>
 
                 <div className="profile-user">
 
