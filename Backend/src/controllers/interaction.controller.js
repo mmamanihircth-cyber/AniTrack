@@ -2,6 +2,7 @@ import Review from '../models/review.model.js';
 import UserList from '../models/userList.model.js';
 import Notification from '../models/notification.model.js';
 import ServerError from '../helpers/serverError.helper.js';
+import mongoose from 'mongoose';
 
 class InteractionController {
     
@@ -178,25 +179,28 @@ class InteractionController {
     // 6. AGREGAR O QUITAR FAVORITO
 async toggleFavorite(request, response) {
     try {
-
-        const usuario_id = request.user.id;
         const { anime_id } = request.body;
 
         if (!anime_id) {
-            throw new ServerError("El ID del anime es obligatorio", 400);
+            return response.status(400).json({
+                ok: false,
+                message: "El ID del anime es obligatorio"
+            });
         }
 
+        // Convertimos el id del usuario a ObjectId de Mongoose para que no falle la consulta
+        const usuario_id = new mongoose.Types.ObjectId(request.user.id);
+
         let itemLista = await UserList.findOne({
-            usuario_id,
-            anime_id
+            usuario_id: usuario_id,
+            anime_id: anime_id
         });
 
         // Si no existe, lo agregamos automáticamente a la lista
         if (!itemLista) {
-
             itemLista = await UserList.create({
-                usuario_id,
-                anime_id,
+                usuario_id: usuario_id,
+                anime_id: anime_id,
                 estado: "PLAN_TO_WATCH",
                 favorito: true
             });
@@ -207,12 +211,10 @@ async toggleFavorite(request, response) {
                 message: "Anime agregado a favoritos",
                 data: { itemLista }
             });
-
         }
 
         // Si existe, invertimos el estado del favorito
         itemLista.favorito = !itemLista.favorito;
-
         await itemLista.save();
 
         return response.status(200).json({
@@ -225,14 +227,11 @@ async toggleFavorite(request, response) {
         });
 
     } catch (error) {
-
-        console.error(error);
-
+        console.error("Error real en backend:", error); // Esto te va a mostrar en la consola local qué pasó exactamente
         return response.status(500).json({
             ok: false,
-            message: "Error al actualizar favoritos"
+            message: error.message || "Error al actualizar favoritos"
         });
-
     }
 }
 // 7. OBTENER MI LISTA PERSONAL DE ANIMES (Sin populate por el cambio de estrategia)
