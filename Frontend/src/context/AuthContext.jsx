@@ -18,10 +18,20 @@ export const AuthContextProvider = ({children}) => {
     const [isLogged, setIsLogged] = useState(Boolean(auth_token))
     const [userData, setUserData] = useState(null)
 
-    function login (auth_token) {
-        localStorage.setItem(AUTH_TOKEN_LOCALSTORAGE_KEY, auth_token)
-        setIsLogged(true)
-    }
+    function login(auth_token) {
+    localStorage.setItem(AUTH_TOKEN_LOCALSTORAGE_KEY, auth_token);
+
+    const payload = jwtDecode(auth_token);
+
+    setUserData({
+        email: payload.email,
+        fecha_creacion: payload.fecha_creacion,
+        id: payload.id,
+        nombre: payload.nombre
+    });
+
+    setIsLogged(true);
+}
 
     function logout (){
         localStorage.removeItem(AUTH_TOKEN_LOCALSTORAGE_KEY)

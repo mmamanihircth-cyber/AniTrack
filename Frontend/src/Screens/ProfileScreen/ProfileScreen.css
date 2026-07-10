@@ -1,0 +1,32 @@
+.profile-page{
+    min-height:100vh;
+    background:#0b1120;
+    padding:40px 20px;
+}
+
+.profile-container{
+    max-width:1000px;
+    margin:auto;
+}
+
+.profile-title{
+    color:white;
+    font-size:40px;
+    margin-bottom:30px;
+}
+
+.profile-user{
+    background:#121b31;
+    border:1px solid rgba(91,136,255,.15);
+    border-radius:20px;
+    padding:30px;
+}
+
+.profile-user h2{
+    color:white;
+    margin-bottom:10px;
+}
+
+.profile-user p{
+    color:#9eb6ff;
+}
