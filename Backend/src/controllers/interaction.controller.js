@@ -201,7 +201,7 @@ async toggleFavorite(request, response) {
             itemLista = await UserList.create({
                 usuario_id: usuario_id,
                 anime_id: anime_id,
-                estado: "PLAN_TO_WATCH",
+                estado: "plan",
                 favorito: true
             });
 
