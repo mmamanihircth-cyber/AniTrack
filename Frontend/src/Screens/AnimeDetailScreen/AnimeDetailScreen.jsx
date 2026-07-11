@@ -7,6 +7,7 @@ import './AnimeDetailScreen.css'
 
 export const AnimeDetailScreen = () => {
 
+    const { user } = useContext(AuthContext);
     const { id } = useParams()
     const navigate = useNavigate()
     const { isLogged } = useContext(AuthContext)
@@ -36,7 +37,7 @@ export const AnimeDetailScreen = () => {
 
     const [episodesWatched, setEpisodesWatched] = useState(0);
 
-    const [reviews, setReviews] = useState(anime.reviews || []);
+    const [reviews, setReviews] = useState([]);
 
     const [reviewText, setReviewText] = useState("");
 
@@ -145,10 +146,21 @@ useEffect(() => {
 
     async function fetchReviews() {
         try {
-            const data = await getReviewsByAnime(anime.id);
-            setReviews(data);
+            const respuestaAPI = await getReviewsByAnime(anime.id);
+            
+            // 🔍 Tu backend devuelve { ok: true, data: { reviews: [...] } }
+            if (respuestaAPI && respuestaAPI.data && Array.isArray(respuestaAPI.data.reviews)) {
+                setReviews(respuestaAPI.data.reviews);
+            } else if (respuestaAPI && Array.isArray(respuestaAPI.reviews)) {
+                setReviews(respuestaAPI.reviews);
+            } else if (Array.isArray(respuestaAPI)) {
+                setReviews(respuestaAPI);
+            } else {
+                setReviews([]); 
+            }
         } catch (error) {
             console.error("Error al traer reviews:", error);
+            setReviews([]);
         }
     }
     fetchReviews();
@@ -167,23 +179,26 @@ const handlePublishReview = async () => {
     const puntuacionBase10 = estrellasSeleccionadas * 2; 
 
     try {
-        const nuevaReview = await createReview(anime.id, puntuacionBase10, reviewText);
-        
-        // 🌟 AGREGAMOS PROTECCIÓN ACÁ: 
-        // Si 'prev' no es un array (por un error previo de la API), nos aseguramos de usar []
+        const respuesta = await createReview(anime.id, puntuacionBase10, reviewText);
+        const nuevaReviewRaw = respuesta.review || respuesta.data || respuesta;
+        const nombreUsuarioActual = user?.nombre || user?.username || "dueño";
+        const nuevaReviewPopulada = {
+        ...nuevaReviewRaw,
+        usuario_id: {
+            ...nuevaReviewRaw.usuario_id,
+            nombre: nombreUsuarioActual // ✨ ¡Cero trampas! Ahora es 100% real
+        }
+    };
         setReviews(prev => {
-            const listaSegura = Array.isArray(prev) ? prev : [];
-            return [nuevaReview, ...listaSegura];
-        });
-        
+        const listaSegura = Array.isArray(prev) ? prev : [];
+        return [nuevaReviewPopulada, ...listaSegura];
+    });
         // Reset del formulario
         setReviewText("");
         setSelectedStars(0);
-        alert("Review published successfully!");
     } catch (error) {
-        console.error("Error al publicar la review:", error);
-        alert("Hubo un problema al subir tu comentario.");
-    }
+    console.error("Error al publicar la review:", error);
+}
 };
 
     return (
@@ -828,19 +843,20 @@ const handlePublishReview = async () => {
     <div className="reviews-container">
     {Array.isArray(reviews) && reviews.length > 0 ? (
         reviews.map((review) => {
-            // 🔍 Extraemos de manera segura el objeto 'data' si viene anidado de la API
+            // Aseguramos capturar el objeto limpio sin importar de qué endpoint venga
             const reviewData = review.review ? review.review : review;
 
-            // 🌟 CORREGIDO: Extraemos 'nombre' que es lo que manda tu backend populado
+            // 🌟 LEEMOS 'nombre' QUE VIENE DE TU POPULATE DEL BACKEND
             const username = 
                 reviewData.usuario_id?.nombre || 
                 reviewData.usuario?.nombre || 
+                reviewData.nombre ||
                 "Anonymous";
                 
             const inicial = username.charAt(0).toUpperCase();
             
-            // 🌟 OPCIONAL: Si el usuario tiene foto de perfil guardada, la usamos
-            const userAvatarUrl = reviewData.usuario_id?.imagen_url || reviewData.usuario_id?.avatarUrl;
+            // Leemos la imagen de perfil si el usuario la tiene configurada
+            const userAvatarUrl = reviewData.usuario_id?.imagen_url || reviewData.usuario_id?.imagen_url;
 
             const estrellasRellenas = Math.round((reviewData.puntuacion || 10) / 2);
             const textoComentario = reviewData.comentario || reviewData.texto || "";
@@ -854,7 +870,6 @@ const handlePublishReview = async () => {
                 <article key={reviewData._id || reviewData.id} className="review-card">
                     <div className="review-header">
                         <div className="review-user">
-                            {/* 🌟 Muestra la imagen de perfil si existe; si no, muestra la inicial */}
                             <div className="review-avatar">
                                 {userAvatarUrl ? (
                                     <img src={userAvatarUrl} alt={username} className="avatar-img" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
@@ -877,7 +892,7 @@ const handlePublishReview = async () => {
                         <span className="review-likes">
                             ❤️ {reviewData.likes?.length || 0} people found this review helpful
                         </span>
-                        <button className="review-like-btn">👍 Helpful</button>
+                        <button className="review-like-btn">👍</button>
                     </div>
                 </article>
             );
