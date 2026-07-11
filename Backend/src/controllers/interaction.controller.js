@@ -18,15 +18,14 @@ class InteractionController {
 
             // upsert: true se encarga de crear el comentario si no existe, o actualizarlo si el usuario ya comentó ese anime
             const review = await Review.findOneAndUpdate(
-                { usuario_id, anime_id },
-                { puntuacion, comentario: comentario || "" },
-                { new: true, upsert: true }
+                { usuario_id: req.user.id, anime_id },
+                { puntuacion, comentario },
+                { new: true, upsert: true}
             );
-
+            await review.populate('usuario_id', 'username avatarUrl');
             return response.status(200).json({
                 ok: true,
-                message: "¡Tu comentario ha sido guardado con éxito!",
-                data: { review }
+                review 
             });
         } catch (error) {
             console.error(error);

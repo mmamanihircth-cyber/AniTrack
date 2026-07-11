@@ -76,6 +76,54 @@ export async function getFavorites() {
     }
 
 }
+// 📥 Obtener todos los comentarios de un anime (RUTA PÚBLICA)
+export async function getReviewsByAnime(anime_id) {
+    try {
+        // 🌟 CAMBIO ACÁ: Agregamos '/anime/' en la URL como pide tu backend
+        const response_http = await fetch(`${API_URL}/review/anime/${anime_id}`);
+        
+        const data = await response_http.json();
+        
+        // Retornamos el array de reviews (adaptalo si tu controller devuelve data.reviews o directo el array)
+        if (response_http.ok) {
+            return data.reviews || data.data || (Array.isArray(data) ? data : []);
+        }
+        return [];
+    } catch (error) {
+        console.error("Error en getReviewsByAnime:", error);
+        return [];
+    }
+}
+
+// 📤 Publicar una review (REQUIERE AUTH)
+export async function createReview(anime_id, puntuacion, comentario) {
+    try {
+        const token = getAuthToken();
+        
+        // 🌟 RUTA: '/review' (esta estaba bien, pero aseguramos el tipado interno)
+        const response_http = await fetch(`${API_URL}/review`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                anime_id: String(anime_id), // Lo forzamos a String para tu esquema
+                puntuacion: Number(puntuacion),
+                comentario
+            })
+        });
+
+        const data = await response_http.json();
+        if (!response_http.ok) {
+            throw new Error(data.message || "Error al guardar la review");
+        }
+        return data.review || data.data || data;
+    } catch (error) {
+        console.error("Error en createReview:", error);
+        throw error;
+    }
+}
 export async function addOrUpdateInList(anime_id, estado) {
 
     try {

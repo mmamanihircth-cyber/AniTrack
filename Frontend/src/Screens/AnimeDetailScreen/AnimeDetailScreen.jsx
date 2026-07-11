@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { AuthContext } from '../../context/AuthContext'
 import { MIS_ANIMES } from '../../Data/animes'
-import { toggleFavorite, getFavorites, addOrUpdateInList} from "../../services/interaction.service";
+import { toggleFavorite, getFavorites, addOrUpdateInList, getReviewsByAnime, createReview } from "../../services/interaction.service";
 import './AnimeDetailScreen.css'
 
 export const AnimeDetailScreen = () => {
@@ -140,40 +140,46 @@ const handleStatusChange = async (event) => {
     }
 
 };
+useEffect(() => {
+    if (!anime?.id) return;
 
-function handlePublishReview() {
+    async function fetchReviews() {
+        try {
+            const data = await getReviewsByAnime(anime.id);
+            setReviews(data);
+        } catch (error) {
+            console.error("Error al traer reviews:", error);
+        }
+    }
+    fetchReviews();
+}, [anime.id]);
 
-    if (!reviewText.trim() || selectedStars === 0) return;
+// 📤 Manejar la publicación de la review
+const handlePublishReview = async () => {
+    if (!reviewText.trim()) return;
+    
+    const estrellasSeleccionadas = selectedStars || 5; 
+    const puntuacionBase10 = estrellasSeleccionadas * 2; 
 
-    const newReview = {
-
-        id: Date.now(),
-
-        usuario: "You",
-
-        avatar: "",
-
-        fecha: "Just now",
-
-        puntuacion: selectedStars,
-
-        likes: 0,
-
-        comentario: reviewText
-
-    };
-
-    setReviews(prev => [newReview, ...prev]);
-
-    setReviewText("");
-
-    setSelectedStars(0);
-
-    setHoverStars(0);
-
-}
-
-
+    try {
+        const nuevaReview = await createReview(anime.id, puntuacionBase10, reviewText);
+        
+        // 🌟 AGREGAMOS PROTECCIÓN ACÁ: 
+        // Si 'prev' no es un array (por un error previo de la API), nos aseguramos de usar []
+        setReviews(prev => {
+            const listaSegura = Array.isArray(prev) ? prev : [];
+            return [nuevaReview, ...listaSegura];
+        });
+        
+        // Reset del formulario
+        setReviewText("");
+        setSelectedStars(0);
+        alert("Review published successfully!");
+    } catch (error) {
+        console.error("Error al publicar la review:", error);
+        alert("Hubo un problema al subir tu comentario.");
+    }
+};
 
     return (
         <div className="detail-page">
@@ -815,68 +821,42 @@ function handlePublishReview() {
     </p>
 
     <div className="reviews-container">
+    {/* 🌟 Forzamos que si 'reviews' no es un array, use una lista vacía y no rompa */}
+    {Array.isArray(reviews) && reviews.length > 0 ? (
+        reviews.map((review) => {
+            const username = review.usuario_id?.username || "Anonymous";
+            const inicial = username.charAt(0).toUpperCase();
+            const estrellasRellenas = Math.round((review.puntuacion || 10) / 2);
 
-        {reviews.map((review) => (
-
-    <article
-        key={review.id}
-        className="review-card"
-    >
-
-        <div className="review-header">
-
-            <div className="review-user">
-
-                <div className="review-avatar">
-                    {review.usuario.charAt(0)}
-                </div>
-
-                <div>
-
-                <strong>{JSON.stringify(review.usuario)}</strong> 
-
-                    <span>{review.fecha}</span>
-
-                </div>
-
-            </div>
-
-            <div className="review-score">
-
-                {"★".repeat(review.puntuacion)}
-                {"☆".repeat(5 - review.puntuacion)}
-
-            </div>
-
-        </div>
-
-        <p className="review-text">
-
-            {review.comentario}
-
-        </p>
-
-        <div className="review-footer">
-
-            <span className="review-likes">
-
-                ❤️ {review.likes} people found this review helpful
-
-            </span>
-
-            <button className="review-like-btn">
-
-                👍 Helpful
-
-            </button>
-
-        </div>
-
-    </article>
-
-))}
-
-    </div>
+            return (
+                <article key={review._id || review.id} className="review-card">
+                    <div className="review-header">
+                        <div className="review-user">
+                            <div className="review-avatar">{inicial}</div>
+                            <div>
+                                <strong>{username}</strong> 
+                                <span>{new Date(review.fecha_publicacion || review.fecha).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                        <div className="review-score">
+                            {"★".repeat(estrellasRellenas)}
+                            {"☆".repeat(5 - estrellasRellenas)}
+                        </div>
+                    </div>
+                    <p className="review-text">{review.comentario}</p>
+                    <div className="review-footer">
+                        <span className="review-likes">
+                            ❤️ {review.likes?.length || 0} people found this review helpful
+                        </span>
+                        <button className="review-like-btn">👍 Helpful</button>
+                    </div>
+                </article>
+            );
+        })
+    ) : (
+        <p className="no-reviews">No reviews yet. Be the first to comment!</p>
+    )}
+</div>
 
     {!isLogged && (
 
