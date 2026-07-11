@@ -157,6 +157,11 @@ useEffect(() => {
 // 📤 Manejar la publicación de la review
 const handlePublishReview = async () => {
     if (!reviewText.trim()) return;
+
+    if (selectedStars === 0) {
+        alert("Por favor, selecciona una puntuación antes de publicar tu review.");
+        return;
+    }
     
     const estrellasSeleccionadas = selectedStars || 5; 
     const puntuacionBase10 = estrellasSeleccionadas * 2; 
@@ -821,21 +826,45 @@ const handlePublishReview = async () => {
     </p>
 
     <div className="reviews-container">
-    {/* 🌟 Forzamos que si 'reviews' no es un array, use una lista vacía y no rompa */}
     {Array.isArray(reviews) && reviews.length > 0 ? (
         reviews.map((review) => {
-            const username = review.usuario_id?.username || "Anonymous";
+            // 🔍 Extraemos de manera segura el objeto 'data' si viene anidado de la API
+            const reviewData = review.review ? review.review : review;
+
+            // 🌟 CORREGIDO: Extraemos 'nombre' que es lo que manda tu backend populado
+            const username = 
+                reviewData.usuario_id?.nombre || 
+                reviewData.usuario?.nombre || 
+                "Anonymous";
+                
             const inicial = username.charAt(0).toUpperCase();
-            const estrellasRellenas = Math.round((review.puntuacion || 10) / 2);
+            
+            // 🌟 OPCIONAL: Si el usuario tiene foto de perfil guardada, la usamos
+            const userAvatarUrl = reviewData.usuario_id?.imagen_url || reviewData.usuario_id?.avatarUrl;
+
+            const estrellasRellenas = Math.round((reviewData.puntuacion || 10) / 2);
+            const textoComentario = reviewData.comentario || reviewData.texto || "";
+
+            const fechaOriginal = reviewData.fecha_publicacion || reviewData.fecha || new Date();
+            const fechaFormateada = new Date(fechaOriginal).toString() !== "Invalid Date"
+                ? new Date(fechaOriginal).toLocaleDateString()
+                : new Date().toLocaleDateString();
 
             return (
-                <article key={review._id || review.id} className="review-card">
+                <article key={reviewData._id || reviewData.id} className="review-card">
                     <div className="review-header">
                         <div className="review-user">
-                            <div className="review-avatar">{inicial}</div>
+                            {/* 🌟 Muestra la imagen de perfil si existe; si no, muestra la inicial */}
+                            <div className="review-avatar">
+                                {userAvatarUrl ? (
+                                    <img src={userAvatarUrl} alt={username} className="avatar-img" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                                ) : (
+                                    inicial
+                                )}
+                            </div>
                             <div>
                                 <strong>{username}</strong> 
-                                <span>{new Date(review.fecha_publicacion || review.fecha).toLocaleDateString()}</span>
+                                <span>{fechaFormateada}</span>
                             </div>
                         </div>
                         <div className="review-score">
@@ -843,10 +872,10 @@ const handlePublishReview = async () => {
                             {"☆".repeat(5 - estrellasRellenas)}
                         </div>
                     </div>
-                    <p className="review-text">{review.comentario}</p>
+                    <p className="review-text">{textoComentario}</p>
                     <div className="review-footer">
                         <span className="review-likes">
-                            ❤️ {review.likes?.length || 0} people found this review helpful
+                            ❤️ {reviewData.likes?.length || 0} people found this review helpful
                         </span>
                         <button className="review-like-btn">👍 Helpful</button>
                     </div>
