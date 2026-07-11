@@ -1,25 +1,65 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { AuthContext } from '../../context/AuthContext.jsx'
 import { useNavigate } from 'react-router'
 import { MIS_ANIMES } from '../../Data/animes'
 import './HomeScreen.css'
 import homeBanner from '../../Asent/home-banner.png'
+// 🌟 Asegurate de que quede exactamente así:
+import { toggleFavorite, getFavorites } from "../../services/interaction.service";
 
 export const HomeScreen = () => {
   const { isLogged, logout, userData } = useContext(AuthContext)
   const navigate = useNavigate()
   const [busqueda, setBusqueda] = useState('')
-
+  const [userList, setUserList] = useState([])
+  // --- Agrega esto justo debajo de tus useState ---
   function handleLogout() {
     logout()
     navigate('/login')
   }
 
-  function handleInteraccion(accion) {
-    if (!isLogged) {
-      navigate('/login');
-    } 
-  }
+  useEffect(() => {
+    async function loadUserList() {
+      if (!isLogged) return; 
+      try {
+        const response = await getFavorites();
+        
+        // Evaluamos de manera flexible lo que mande el backend
+        if (response && Array.isArray(response)) {
+          setUserList(response);
+        } else if (response?.favoritos && Array.isArray(response.favoritos)) {
+          setUserList(response.favoritos);
+        } else if (response?.data && Array.isArray(response.data)) {
+          setUserList(response.data);
+        } else if (response?.data?.favoritos && Array.isArray(response.data.favoritos)) {
+          setUserList(response.data.favoritos);
+        }
+      } catch (error) {
+        console.error("Error al cargar la lista del usuario en el Home:", error);
+      }
+    }
+    loadUserList();
+  }, [isLogged]);
+
+  const handleQuickAdd = async (animeId) => {
+    try {
+        const data = await toggleFavorite(animeId);
+        
+        // 🔄 Verificamos si ya estaba agregado en nuestro estado local
+        const yaEsta = userList.some(item => item.anime_id === animeId);
+
+        if (yaEsta) {
+            // Si ya estaba, significa que el backend lo SACÓ. Lo borramos del estado local.
+            setUserList(prev => prev.filter(item => item.anime_id !== animeId));
+        } else {
+            // Si no estaba, el backend lo AGREGÓ. Lo sumamos al estado local.
+            setUserList(prev => [...prev, { anime_id: animeId }]);
+        }
+    } catch (error) {
+        console.error("Error al interactuar con el anime:", error);
+        alert("No se pudo actualizar la lista, ¿estás logueado?");
+    }
+  };
 
   // 🔍 Filtro para la barra de búsqueda central
   const animesFiltrados = MIS_ANIMES.filter(anime => 
@@ -142,49 +182,53 @@ export const HomeScreen = () => {
 
           <div className="anime-grid">
             {animesFiltrados.length > 0 ? (
-              animesFiltrados.map((anime) => (
-                <div key={anime.id} className="anime-card glass-card">
-  <div className="card-rank-box">
-    <span className="rank-label">RANK</span>
-    <span className="rank-value">{anime.ranking !== "N/A" ? anime.ranking : "-"}</span>
-  </div>
-  
-  {/* 1. Agregamos el clic a la imagen del póster */}
-  <img 
-    src={anime.imagen} 
-    alt={anime.titulo} 
-    className="anime-poster" 
-    onClick={() => navigate(`/anime/${anime.id}`)}
-    style={{ cursor: 'pointer' }}
-  />
+              animesFiltrados.map((anime) => {
+                // 🔍 Cruce de datos clave: Verificamos si este anime ya está guardado en la lista del usuario
+                const yaEstaAgregado = userList.some(item => item.anime_id === anime.id);
 
-  <div className="anime-details">
-    {/* 2. El título ya tiene el navigate, le sumamos color de link para que se note el cambio */}
-    <h3 
-      className="anime-title-link" 
-      onClick={() => navigate(`/anime/${anime.id}`)}
-      style={{ cursor: 'pointer', color: '#7294e3' }}
-    >
-      {anime.titulo}
-    </h3>
-    
-    <p className="anime-synopsis-text">{anime.sinopsis}</p>
-    
-    <div className="anime-meta-row">
-      <span className="meta-badge">{anime.tipo}</span>
-      <span className="meta-eps">{anime.episodios} eps</span>
-      <span className="meta-members">👥 {anime.miembros} members</span>
-      
-      <button 
-        className="btn-primary"
-        onClick={() => handleInteraccion("agregar este anime a tu lista")}
-      >
-        + Add to List
-      </button>
-    </div>
-  </div>
-</div>
-              ))
+                return (
+                  <div key={anime.id} className="anime-card glass-card">
+                    <div className="card-rank-box">
+                      <span className="rank-label">RANK</span>
+                      <span className="rank-value">{anime.ranking !== "N/A" ? anime.ranking : "-"}</span>
+                    </div>
+                    
+                    <img 
+                      src={anime.imagen} 
+                      alt={anime.titulo} 
+                      className="anime-poster" 
+                      onClick={() => navigate(`/anime/${anime.id}`)}
+                      style={{ cursor: 'pointer' }}
+                    />
+
+                    <div className="anime-details">
+                      <h3 
+                        className="anime-title-link" 
+                        onClick={() => navigate(`/anime/${anime.id}`)}
+                        style={{ cursor: 'pointer', color: '#7294e3' }}
+                      >
+                        {anime.titulo}
+                      </h3>
+                      
+                      <p className="anime-synopsis-text">{anime.sinopsis}</p>
+                      
+                      <div className="anime-meta-row">
+                        <span className="meta-badge">{anime.tipo}</span>
+                        <span className="meta-eps">{anime.episodios} eps</span>
+                        <span className="meta-members">👥 {anime.miembros} members</span>
+                        
+                        {/* 🎨 BOTÓN INTERACTIVO MODIFICADO */}
+                        <button 
+  className={yaEstaAgregado ? "btn-added" : "btn-primary"}
+  onClick={() => handleQuickAdd(anime.id)} 
+>
+  {yaEstaAgregado ? "Added" : "+ Add to List"}
+</button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
             ) : (
               <p style={{ textAlign: 'center', color: '#6a6f8a', marginTop: '20px' }}>No se encontraron animes con ese nombre.</p>
             )}

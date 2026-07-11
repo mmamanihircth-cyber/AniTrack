@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router";
 import { getFavorites } from "../../services/interaction.service";
+import { MIS_ANIMES } from "../../data/animes.js"; // O la ruta correcta a tu archivo
 import "./ProfileScreen.css";
 
 const ProfileScreen = () => {
@@ -81,31 +82,41 @@ const ProfileScreen = () => {
 </div>
 
 <div className="profile-favorites">
-
-        <h2>Mis Favoritos</h2>
-
+    <h2>Mis Favoritos</h2>
+    
+    {/* Contenedor padre directo para que la grilla funcione impecable */}
+    <div className={favorites.length > 0 ? "favorites-grid" : ""}>
         {
             favorites.length === 0
-            ? (
-                <p>No tienes animes favoritos todavía.</p>
-            )
-            : (
-                favorites.map(favorite => (
+            ? <p>No tienes animes favoritos todavía.</p>
+            : favorites.map(favorite => {
+    // 🔍 Buscamos en tu archivo de constantes el anime que coincida con el ID de la base de datos
+    const animeData = MIS_ANIMES.find(anime => anime.id === favorite.anime_id);
 
-                    <div
-                        key={favorite._id}
-                        className="favorite-card"
-                    >
+    // 🖼️ Si lo encuentra, usamos su imagen real. Si no (por las dudas), dejamos un fondo oscuro.
+    const imageUrl = animeData ? animeData.imagen : "";
+    // 📝 Si lo encuentra usás el título oficial, si no, el ID de respaldo
+    const titleToShow = animeData ? animeData.titulo : favorite.anime_id;
 
-                        {favorite.anime_id}
-
-                    </div>
-
-                ))
-            )
+    return (
+        <div 
+            key={favorite._id} 
+            className="favorite-card"
+            style={{
+    backgroundImage: imageUrl 
+        ? `linear-gradient(to top, rgba(15, 23, 42, 1) 0%, rgba(15, 23, 42, 0.8) 25%, rgba(15, 23, 42, 0) 80%), url(${imageUrl})`
+        : 'none'
+}}
+        >
+            <span className="favorite-card-title">
+                {titleToShow}
+            </span>
+        </div>
+    );
+})
         }
-
     </div>
+</div>
 
 <div className="profile-info-card">
 

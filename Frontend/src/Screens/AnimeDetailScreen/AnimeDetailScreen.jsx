@@ -41,29 +41,37 @@ export const AnimeDetailScreen = () => {
     const [reviewText, setReviewText] = useState("");
 
     useEffect(() => {
-
-    if (!isLogged) return;
+    if (!isLogged || !anime?.id) return;
 
     async function loadFavorites() {
-
         try {
-
             const response = await getFavorites();
+            let listaFavoritos = [];
 
-            const existe = response.data.favoritos.some(
-    favorito => Number(favorito.anime_id) === Number(anime.id)
-);
+            // 🔍 Validamos de manera segura dónde están los datos de la respuesta
+            if (response && Array.isArray(response)) {
+                listaFavoritos = response;
+            } else if (response?.data && Array.isArray(response.data)) {
+                listaFavoritos = response.data;
+            } else if (response?.data?.favoritos && Array.isArray(response.data.favoritos)) {
+                listaFavoritos = response.data.favoritos;
+            } else if (response?.favoritos && Array.isArray(response.favoritos)) {
+                listaFavoritos = response.favoritos;
+            }
+
+            // 📌 Comparamos transformando ambos a String para evitar fallas de tipo (Ej: "21" === 21)
+            const existe = listaFavoritos.some(
+                fav => String(fav.anime_id) === String(anime.id)
+            );
 
             setFavorite(existe);
 
         } catch (error) {
-            console.error(error);
+            console.error("Error al cargar favoritos en AnimeDetailScreen:", error);
         }
-
     }
 
     loadFavorites();
-
 }, [anime.id, isLogged]);
 
     const increaseEpisodes = () => {
@@ -106,10 +114,10 @@ const decreaseEpisodes = () => {
 
 const handleFavorite = async () => {
     try {
-        const data = await toggleFavorite(anime.id);
+        await toggleFavorite(anime.id);
         
-        // Usamos 'data' que es donde guardamos el resultado
-        setFavorite(data.favorite); 
+        // 🔄 Cambia instantáneamente de true a false, o de false a true de forma segura
+        setFavorite(prev => !prev); 
         
     } catch (error) {
         console.error("Error al actualizar favoritos en pantalla:", error);
@@ -389,19 +397,12 @@ function handlePublishReview() {
         <div className="panel-item">
 
             <label>Favorite</label>
-
-            <button
-    className={
-        favorite
-            ? "favorite-btn active"
-            : "favorite-btn"
-    }
+  <button
+    className={favorite ? "favorite-btn active" : "favorite-btn"}
     onClick={handleFavorite}
->
-    {favorite
-        ? "❤ Added"
-        : "♡ Add"}
-</button>
+  >
+    {favorite ? "Added" : "+ Add to List"}
+  </button>
 
         </div>
 

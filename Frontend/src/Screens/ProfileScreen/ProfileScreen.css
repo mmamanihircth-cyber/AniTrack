@@ -211,3 +211,97 @@
     }
 
 }
+/* --- SECCIÓN MIS FAVORITOS --- */
+.profile-favorites {
+    width: 100%;
+    max-width: 850px;
+    margin: 30px auto 15px auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el título H2 */
+}
+
+.profile-favorites h2 {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Grilla responsive que acomoda las tarjetas solas */
+.profile-favorites :not(h2):not(p) { /* Esto aplica al contenedor del renderizado */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+/* Si no hay favoritos, el texto se ve prolijo */
+.profile-favorites p {
+    color: #9fb4ff;
+    font-size: 14px;
+    font-style: italic;
+    text-align: left;
+}
+
+/* Tarjeta de cada Anime Favorito */
+.favorite-card {
+    background-color: #0f172a;
+    border: 1px solid rgba(159, 180, 255, 0.15);
+    border-radius: 14px;
+    width: 140px;        
+    height: 195px;       
+    padding: 12px;
+    display: flex;
+    align-items: flex-end; 
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+    
+    /* Sombra interna para oscurecer la base y bordes claros */
+    box-shadow: inset 0 -45px 30px #0f172a, 
+                inset 0 0 20px rgba(15, 23, 42, 0.4);
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-origin: border-box;
+}
+
+/* Efecto hover interactivo al pasar el mouse */
+.favorite-card:hover {
+    transform: translateY(-6px);
+    border-color: #9fb4ff;
+    box-shadow: inset 0 -45px 40px rgba(15, 23, 42, 0.95), 
+                0 10px 25px rgba(0, 0, 0, 0.5);
+}
+.favorite-card-title {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.9);
+    z-index: 2;
+    text-align: center;
+}
+/* Separación extra para la tarjeta de Información de abajo */
+.profile-info-card {
+    margin-top: 35px !important;
+}
+.favorites-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    
+    /* 🚀 ESTO OBLIGA A LAS TARJETAS A QUEDAR EN EL CENTRO EXACTO */
+    justify-content: center; 
+    align-items: center;
+}

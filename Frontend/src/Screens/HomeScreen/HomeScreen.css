@@ -1434,7 +1434,44 @@ body{
 /* =====================================================
             BOTON GENERAL
 ===================================================== */
+.btn-added {
+    margin-left:auto;
 
+    height:46px;
+
+    padding:0 34px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:
+
+        linear-gradient(
+
+            135deg,
+
+            #b91c1c,
+
+            #991b1b
+
+        );
+
+    color:white;
+
+    font-weight:700;
+
+    cursor:pointer;
+    pointer-events: auto !important;
+    transition:.30s;
+
+    box-shadow:
+
+        0 12px 28px rgba(76,130,255,.30);
+}
+.btn-added:hover {
+    background-color: #991b1b !important;
+}
 .btn-add-list,
 .btn-primary{
 
