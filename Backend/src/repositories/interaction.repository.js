@@ -23,19 +23,32 @@ class InteractionRepository {
 
     // 📥 Obtener el feed de una comunidad con la información integrada del usuario (nombre e imagen)
     async getByWorkspaceId(workspace_id) {
-        const result = await Interaction
-            .find({ fk_workspace_id: workspace_id })
-            .populate(
-                'fk_user_id', 'nombre imagen_url' // Traemos el nombre y el avatar elegido por el usuario para renderizar en el feed
-            )
-            .sort({ fecha_creacion: -1 }); // Los más recientes arriba de todo
+        try {
+            // Buscamos las interacciones de este workspace
+            const result = await Interaction
+                .find({ fk_workspace_id: workspace_id })
+                .populate('fk_user_id', 'nombre imagen_url') // Trae los campos del usuario
+                .sort({ fecha_creacion: -1 });
 
-        // Mapeamos los resultados usando el formateador del final del archivo
-        const feed_mapped = result.map(
-            (interaction) => new InteractionWithUserInfo(interaction)
-        );
+            // 🛡️ Seguridad 1: Si no hay resultados o viene nulo, devolvemos un array vacío al instante sin mapear
+            if (!result || result.length === 0) {
+                return [];
+            }
 
-        return feed_mapped;
+            // Mapeamos los resultados de forma segura
+            const feed_mapped = result.map((interaction) => {
+                // 🛡️ Seguridad 2: Si el objeto de la interacción viene corrupto por algún motivo, lo salteamos
+                if (!interaction) return null;
+                return new InteractionWithUserInfo(interaction);
+            }).filter(Boolean); // Filtramos cualquier elemento null que haya quedado
+
+            return feed_mapped;
+
+        } catch (error) {
+            // 🛡️ Seguridad 3: Capturamos cualquier fallo de casteo o base de datos y evitamos el crash del servidor
+            console.error("Error en InteractionRepository.getByWorkspaceId:", error);
+            return []; // Retornamos un array vacío para que el frontend no se rompa
+        }
     }
 }
 
