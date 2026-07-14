@@ -209,7 +209,7 @@ body{
 
     gap:12px;
 }
-
+.btn-comunidades,
 .btn-login-header,
 .btn-register-header,
 .btn-logout{
@@ -231,6 +231,19 @@ body{
     transition:.25s;
 }
 
+.btn-comunidades{
+
+    background:#4c82ff;
+
+    color:white;
+}
+
+.btn-comunidades:hover{
+
+    transform:translateY(-2px);
+
+    background:#6694ff;
+}
 /* LOGIN */
 
 .btn-login-header{

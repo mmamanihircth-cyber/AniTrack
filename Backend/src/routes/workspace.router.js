@@ -12,6 +12,7 @@ workspaceRouter.get(
     '/:workspace_id/members/:decision',
     memberWorkspaceController.processInvitation
 );
+workspaceRouter.get('/all', workspaceController.getAllPublic); // Sin filtrar por usuario
 
 //configuramos el auth a nivel de ruta(valida el id del cliente)
 workspaceRouter.use(authMiddleware);

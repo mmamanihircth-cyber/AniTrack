@@ -195,6 +195,17 @@ async getById(req, res, next) {
         next(error);
     }
 }
+async getAllPublic(req, res, next) {
+    try {
+        const workspaces = await workspaceRepository.getAllActive(); // Que traiga todos con { estado: true }
+        return res.status(200).json({
+            ok: true,
+            data: { workspaces }
+        });
+    } catch (error) {
+        next(error);
+    }
+}
 }
 
 const workspaceController = new WorkspaceController();
