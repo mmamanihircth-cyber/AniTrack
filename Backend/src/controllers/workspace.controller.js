@@ -2,6 +2,7 @@ import { MEMBER_WORKSPACE_ROLES } from "../constants/memberRoles.constant.js";
 import ServerError from "../helpers/serverError.helper.js";
 import workspaceRepository from "../repositories/workspace.repository.js";
 import workspaceMemberRepository from "../repositories/workspaceMember.repository.js";
+import MEMBER_INVITATION_STATUS from "../constants/memberInvitationStatus.constant.js"; // 👈 Asegurá que la ruta sea correcta
 
 
 class WorkspaceController {
@@ -27,7 +28,8 @@ class WorkspaceController {
             await workspaceMemberRepository.create(
                 user_id, 
                 newWorkspace._id, 
-                MEMBER_WORKSPACE_ROLES.OWNER
+                MEMBER_WORKSPACE_ROLES.OWNER,
+                MEMBER_INVITATION_STATUS.ACCEPTED
             );
 
             return response.status(201).json({

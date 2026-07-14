@@ -98,7 +98,7 @@ export const HomeScreen = () => {
              <>
              <button 
                 className="btn-comunidades" 
-                onClick={() => navigate('/workspace/6a5552cf14148bfd0067ef07')}
+                onClick={() => navigate('/communities')}
               >
                 Comunidades
               </button>
