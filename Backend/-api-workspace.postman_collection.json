@@ -1,0 +1,43 @@
+{
+  "info": {
+    "_postman_id": "f08256fc-5d32-4dad-b853-ddfa1f8a4db9",
+    "name": "/api/workspace",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54445456",
+    "_collection_link": "https://go.postman.co/collection/54445456-f08256fc-5d32-4dad-b853-ddfa1f8a4db9?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "obtener espacio de trabajo",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "actualizar espacio de trabajo",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "eliminar por id",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "crear espacio de trabajo",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}
