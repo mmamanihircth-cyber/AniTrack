@@ -4,17 +4,14 @@ import { AuthContext } from '../../context/AuthContext';
 import './CommunitiesScreen.css'
 
 export function CommunitiesScreen() {
-  const [activeTab, setActiveTab] = useState('my-communities'); // 'my-communities' | 'explore' | 'create'
+  const [activeTab, setActiveTab] = useState('my-communities'); 
   
-  // Estados para "Mis Comunidades"
   const [myWorkspaces, setMyWorkspaces] = useState([]);
   const [loadingMy, setLoadingMy] = useState(true);
 
-  // Estados para "Explorar"
   const [allWorkspaces, setAllWorkspaces] = useState([]);
   const [loadingExplore, setLoadingExplore] = useState(false);
 
-  // Estado para el formulario de creación
   const [formData, setFormData] = useState({ nombre: '', descripcion: '' });
   const [creating, setCreating] = useState(false);
 
@@ -24,7 +21,6 @@ export function CommunitiesScreen() {
 
   const token = localStorage.getItem('auth_token');
 
-  // 1. Cargar "Mis Comunidades"
   const fetchMyWorkspaces = async () => {
     try {
       setLoadingMy(true);
@@ -44,7 +40,6 @@ export function CommunitiesScreen() {
     }
   };
 
-  // 2. Cargar todas las comunidades públicas ("Explorar")
   const fetchExploreWorkspaces = async () => {
     try {
       setLoadingExplore(true);
@@ -53,7 +48,6 @@ export function CommunitiesScreen() {
       });
       const result = await response.json();
       if (result.ok) {
-        // Guardamos todas las comunidades de la base de datos
         setAllWorkspaces(result.data.workspaces || []);
       }
     } catch (err) {
@@ -68,13 +62,11 @@ export function CommunitiesScreen() {
     fetchMyWorkspaces();
   }, [navigate, isLogged]);
 
-  // Ejecutar carga según pestaña seleccionada
   useEffect(() => {
     if (activeTab === 'my-communities') fetchMyWorkspaces();
     if (activeTab === 'explore') fetchExploreWorkspaces();
   }, [activeTab]);
 
-  // 3. Manejar creación de comunidad
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -96,7 +88,7 @@ export function CommunitiesScreen() {
       const result = await response.json();
       if (result.ok) {
         setFormData({ nombre: '', descripcion: '' });
-        setActiveTab('my-communities'); // Redirige a mis comunidades
+        setActiveTab('my-communities'); 
       } else {
         alert(result.message);
       }
@@ -136,7 +128,6 @@ export function CommunitiesScreen() {
 
 </section>
 
-      {/* 🟢 BARRA DE PESTAÑAS (TABS) */}
       <nav className="communities-tabs">
         <button 
           className={`tab-btn ${activeTab === 'my-communities' ? 'active' : ''}`}
@@ -158,10 +149,7 @@ export function CommunitiesScreen() {
         </button>
       </nav>
 
-      {/* 🟢 CONTENIDO SEGÚN LA PESTAÑA ACTIVA */}
       <main className="communities-content">
-        
-        {/* PESTAÑA: MIS COMUNIDADES */}
         {activeTab === 'my-communities' && (
           <div className="tab-pane">
             {loadingMy ? (
@@ -190,8 +178,6 @@ export function CommunitiesScreen() {
             )}
           </div>
         )}
-
-        {/* PESTAÑA: EXPLORAR COMUNIDADES */}
         {activeTab === 'explore' && (
           <div className="tab-pane">
             {loadingExplore ? (
@@ -201,7 +187,6 @@ export function CommunitiesScreen() {
             ) : (
               <div className="communities-grid">
                 {allWorkspaces.map((ws) => {
-                  // Verificamos si ya somos miembros para poner un estilo visual distintivo
                   const isMember = myWorkspaces.some(myWs => myWs.workspace_id === ws._id);
                   return (
                     <div 
@@ -223,7 +208,6 @@ export function CommunitiesScreen() {
           </div>
         )}
 
-        {/* PESTAÑA: CREAR COMUNIDAD */}
         {activeTab === 'create' && (
           <div className="tab-pane creation-pane">
 

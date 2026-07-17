@@ -9,21 +9,21 @@ const workspaceSchema = new mongoose.Schema({
     fecha_creacion: {
         type: Date,
         required: true,
-        default: Date.now // Le saqué los () a Date.now para que guarde la fecha exacta al crear, no al levantar el servidor
+        default: Date.now 
     },
     descripcion: {
         type: String,
         required: false,
-        default: "¡Bienvenidos a nuestra comunidad de anime!" // Un texto por defecto más copado
+        default: "¡Bienvenidos a nuestra comunidad de anime!" 
     },
     imagen_url: {
         type: String,
-        default: "" // El truco del link de internet para la foto del club de fans
+        default: "" 
     },
     estado: {
         type: Boolean,
         required: true,
-        default: true // True significa que la comunidad está activa
+        default: true 
     }
 });
 

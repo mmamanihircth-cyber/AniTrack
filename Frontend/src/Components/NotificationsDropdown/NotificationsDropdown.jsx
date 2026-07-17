@@ -12,22 +12,15 @@ export function NotificationsDropdown() {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const token = localStorage.getItem('auth_token');
-
-  // 1. Traer notificaciones del backend
   const fetchNotifications = async () => {
     if (!token) return;
     try {
       setLoading(true);
-      const response = await fetch('https://anitrack-back.vercel.app/api/notifications', { // 👈 Tu backend local
+      const response = await fetch('https://anitrack-back.vercel.app/api/notifications', { 
   headers: {
     'Authorization': `Bearer ${token}`
   }
 });
-      /* const response = await fetch('https://anitrack-back.vercel.app/api/notification', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }); */
       const result = await response.json();
       if (result.ok) {
         const list = result.data.notifications || result.data || [];
@@ -43,11 +36,9 @@ export function NotificationsDropdown() {
   useEffect(() => {
     if (isLogged) {
       fetchNotifications();
-      // Opcional: Podés meter un setInterval cada 30s para que busque notificaciones nuevas en segundo plano
     }
   }, [isLogged]);
 
-  // Cerrar el menú si hacés clic afuera del componente
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -57,25 +48,18 @@ export function NotificationsDropdown() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // Dentro de NotificationsDropdown.jsx
 const handleNotificationClick = async (notif) => {
   setIsOpen(false); 
   try {
-    // 🟢 CORREGIDO: Agregamos "/read" al final de la URL para que coincida con tu router
     await fetch(`https://anitrack-back.vercel.app/api/notifications/${notif._id}/read`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`
       }
     });
-
-    // Actualizar estado local inmediatamente
     setNotifications(prev =>
       prev.map(n => n._id === notif._id ? { ...n, leido: true } : n)
     );
-
-    // Redirigir al destino (por ejemplo, al workspace correspondiente)
     if (notif.redirection_url) {
       navigate(notif.redirection_url);
     } else if (notif.fk_workspace_id) {
@@ -99,13 +83,10 @@ const handleNotificationClick = async (notif) => {
 
   return (
     <div className="notifications-dropdown-container" ref={dropdownRef}>
-      {/* Botón de la Campana */}
       <button className="bell-button" onClick={() => setIsOpen(!isOpen)}>
         <span className="bell-icon">🔔</span>
         {unreadCount > 0 && <span className="bell-badge">{unreadCount}</span>}
       </button>
-
-      {/* Menú Desplegable */}
       {isOpen && (
         <div className="notifications-dropdown">
           <div className="dropdown-header">
@@ -130,7 +111,6 @@ const handleNotificationClick = async (notif) => {
   <div className="item-content">
     <p className="item-message">{notif.mensaje}</p>
     <span className="item-time">
-      {/* 🟢 CORREGIDO: Usamos "notif.fecha" que es el campo real de tu MongoDB */}
       {new Date(notif.fecha).toLocaleDateString(undefined, {
         hour: '2-digit',
         minute: '2-digit'

@@ -5,21 +5,21 @@ const notificationSchema = new mongoose.Schema(
     {
         usuario_destino_id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: USER_COLLECTION_NAME, // El usuario que va a recibir la notificación
+            ref: USER_COLLECTION_NAME, 
             required: true
         },
         tipo: {
             type: String,
             required: true,
-            enum: ['like', 'dislike', 'respuesta', 'invitacion'] // Los tipos de eventos
+            enum: ['like', 'dislike', 'respuesta', 'invitacion'] 
         },
         mensaje: {
             type: String,
-            required: true // Ej: "A xX_Otaku_Xx le gustó tu comentario en Re:Zero"
+            required: true 
         },
         leido: {
             type: Boolean,
-            default: false // Cambia a true cuando el usuario abre la campanita
+            default: false 
         },
         fecha: {
             type: Date,

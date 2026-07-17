@@ -1,4 +1,3 @@
-// src/Data/avatars.js
 export const AVAILABLE_AVATARS = [
     { id: 'SAO', name: 'Asuna', url: '/Avatars/avatar1.png' },
     { id: 'DBZ', name: 'Bulma', url: '/Avatars/avatar2.png' },

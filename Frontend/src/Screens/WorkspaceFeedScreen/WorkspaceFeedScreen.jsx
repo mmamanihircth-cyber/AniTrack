@@ -1,14 +1,12 @@
-import React, { useEffect, useState, useContext } from "react"; // 👈 Agregamos useContext
+import React, { useEffect, useState, useContext } from "react"; 
 import { useParams, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext.jsx"; // 👈 Importamos tu contexto original
+import { AuthContext } from "../../context/AuthContext.jsx"; 
 import { getWorkspaceFeed, createWorkspacePost } from "../../services/interaction.service.js";
 import "./WorkspaceFeedScreen.css";
 
 export const WorkspaceFeedScreen = () => {
     const { workspace_id } = useParams();
     const navigate = useNavigate();
-    
-    // 👤 Consumimos los datos directamente de tu AuthContext
     const { isLogged } = useContext(AuthContext);
 
     const [posts, setPosts] = useState([]);
@@ -17,16 +15,12 @@ export const WorkspaceFeedScreen = () => {
     const [error, setError] = useState(null);
     const [enviando, setEnviando] = useState(false);
 
-    // 🔑 Obtenemos el token con la key exacta que definiste en tu AuthContext
     const token = localStorage.getItem('auth_token'); 
 
-    // Cargar las publicaciones del foro
     const cargarFeed = async () => {
         try {
             setLoading(true);
             setError(null);
-            
-            // Validamos contra tu estado real de login o la existencia del token
             if (!isLogged || !token) {
                 setError("Debes iniciar sesión para ver el feed de esta comunidad.");
                 return;
@@ -49,9 +43,8 @@ export const WorkspaceFeedScreen = () => {
         if (workspace_id) {
             cargarFeed();
         }
-    }, [workspace_id, isLogged]); // Agregamos isLogged como dependencia para recargar si el estado de auth cambia
+    }, [workspace_id, isLogged]); 
 
-    // Manejar el envío de una nueva publicación
     const handleEnviarPost = async (e) => {
         e.preventDefault();
         if (!nuevoContenido.trim()) return;
@@ -170,8 +163,6 @@ export const WorkspaceFeedScreen = () => {
                     </form>
 
                 </section>
-
-                {/* FEED */}
 
                 <section className="feed-container">
 

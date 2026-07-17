@@ -2,8 +2,6 @@ import WorkspaceMember from "../models/workspaceMembers.model.js"
 import MEMBER_INVITATION_STATUS from "../constants/memberInvitationStatus.constant.js"
 
 class WorkspaceMemberRepository {
-
-        //Busca una membresia en particular
     async getByUserAndWorkspaceId(user_id, workspace_id, estatus_invitacion = MEMBER_INVITATION_STATUS.ACCEPTED){
         const membership = await WorkspaceMember.findOne({
             fk_user_id: user_id,
@@ -51,12 +49,11 @@ class WorkspaceMemberRepository {
     async getByUserId(user_id) {
         const memberships = await WorkspaceMember
             .find({ fk_user_id: user_id, estatus_invitacion: MEMBER_INVITATION_STATUS.ACCEPTED })
-            //Por cada membresia quiero expandir la propiedad 'fk_workspace_id' trayendo asi el nombre, descripcion y el estado asociados al espacio de trabajo
             .populate(
                 {
-                    path:  'fk_workspace_id', //Propiedad a expandir
-                    select: 'nombre descripcion estado', //Propiedades que seleccionamos del dato expandido
-                    match: {estado: true} //Condicion
+                    path:  'fk_workspace_id', 
+                    select: 'nombre descripcion estado', 
+                    match: {estado: true} 
                 }
             );
 

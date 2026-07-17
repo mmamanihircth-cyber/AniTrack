@@ -1,13 +1,11 @@
 import ENVIRONMENT from "./config/environment.config.js";
 import connectMongoDB from "./config/mongodb.config.js";
 import express from "express";
-
-/* SOLO EN LOCAL Y SI TIENES PROBLEMAS DE DNS PARA CONECTARTE A MONGODB */
 import dns from 'dns';
 import authRouter from "./routes/auth.router.js";
 import authMiddleware from "./middlewares/auth.middleware.js";
 import workspaceRouter from "./routes/workspace.router.js";
-import cors from 'cors'; // Importante para los problemas de rutas cruzadas (CORS)
+import cors from 'cors'; 
 import errorHandlerMiddleware from "./middlewares/error.middleware.js";
 import interactionRouter from "./routes/interaction.router.js";
 import notificationRouter from "./routes/notification.router.js";
@@ -25,7 +23,6 @@ app.use(cors());
 
 app.use(express.json());
 
-// === ENRUTADORES CONECTADOS ===
 app.use('/api/interactions', interactionRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/workspace', workspaceRouter);

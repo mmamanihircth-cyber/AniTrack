@@ -5,16 +5,16 @@ const userListSchema = new mongoose.Schema(
     {
         usuario_id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: USER_COLLECTION_NAME, // Mantiene la relación con el dueño de la lista
+            ref: USER_COLLECTION_NAME, 
             required: true
         },
         anime_id: {
-            type: String, // 👈 ¡CAMBIO CLAVE! Recibe el ID de texto que viene directo de tu Front
+            type: String, 
             required: true
         },
         estado: {
             type: String,
-            enum: ["watching","completed", "plan", "paused", "dropped"], // Tus estados de seguimiento
+            enum: ["watching","completed", "plan", "paused", "dropped"], 
             required: true,
             default: 'planeado'
         },
@@ -29,7 +29,6 @@ const userListSchema = new mongoose.Schema(
     }
 );
 
-// Índice compuesto para evitar que un mismo usuario agregue dos veces el mismo anime a su lista
 userListSchema.index({ usuario_id: 1, anime_id: 1 }, { unique: true });
 
 export const USER_LIST_COLLECTION_NAME = 'UserList';

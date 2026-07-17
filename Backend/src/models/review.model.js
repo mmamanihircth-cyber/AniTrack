@@ -15,11 +15,11 @@ const reviewSchema = new mongoose.Schema(
     {
         usuario_id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: USER_COLLECTION_NAME, // Conecta con el usuario logueado para sacar nombre y foto
+            ref: USER_COLLECTION_NAME, 
             required: true
         },
         anime_id: {
-            type: String, // Recibe el ID de texto que inventes en tu Front de React
+            type: String, 
             required: true
         },
         puntuacion: { type: Number, required: true, min: 1, max: 10 },

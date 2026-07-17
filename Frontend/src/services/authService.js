@@ -1,6 +1,3 @@
-// Borrá o comentá esta línea que falla:
-// import ENVIRONMENT from '../config/environment'
-
 const API_URL = 'https://anitrack-back.vercel.app/api/auth';
 
 export async function login(email, password) {
@@ -26,14 +23,13 @@ export async function login(email, password) {
     }
 }
 
-export async function register(name, email, password, imagen_url) { // 🌟 Agregamos 'imagen_url' acá
+export async function register(name, email, password, imagen_url) { 
     try {
         const response_http = await fetch(`${API_URL}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            // 🌟 Mandamos 'imagen_url' adentro del JSON que recibe tu backend
             body: JSON.stringify({ name, email, password, imagen_url: imagen_url }) 
         });
 

@@ -55,8 +55,6 @@ useEffect(() => {
         try {
             const response = await getMyList();
             console.log("GET /list:", response);
-
-            // 🟢 Accedemos de forma segura a miLista dentro de response.data
             const listaUser = response?.data?.miLista || [];
 
             const item = listaUser.find(
@@ -78,17 +76,12 @@ useEffect(() => {
 
     useEffect(() => {
   if (hash) {
-    // Le damos un mini delay de 400ms para asegurar que React haya terminado de pintar los comentarios
     const timer = setTimeout(() => {
       const targetId = hash.replace('#', '');
       const element = document.getElementById(targetId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // 🌟 Opcional: Le agregamos una clase CSS para resaltar el comentario seleccionado
         element.classList.add('highlight-comment');
-        
-        // Se la quitamos a los 2 segundos para que no quede permanente
         setTimeout(() => {
           element.classList.remove('highlight-comment');
         }, 2000);
@@ -106,8 +99,6 @@ useEffect(() => {
         try {
             const response = await getFavorites();
             let listaFavoritos = [];
-
-            // 🔍 Validamos de manera segura dónde están los datos de la respuesta
             if (response && Array.isArray(response)) {
                 listaFavoritos = response;
             } else if (response?.data && Array.isArray(response.data)) {
@@ -117,8 +108,6 @@ useEffect(() => {
             } else if (response?.favoritos && Array.isArray(response.favoritos)) {
                 listaFavoritos = response.favoritos;
             }
-
-            // 📌 Comparamos transformando ambos a String para evitar fallas de tipo (Ej: "21" === 21)
             const existe = listaFavoritos.some(
                 fav => String(fav.anime_id) === String(anime.id)
             );
@@ -174,8 +163,6 @@ const decreaseEpisodes = () => {
 const handleFavorite = async () => {
     try {
         await toggleFavorite(anime.id);
-        
-        // 🔄 Cambia instantáneamente de true a false, o de false a true de forma segura
         setFavorite(prev => !prev); 
         
     } catch (error) {
@@ -205,8 +192,6 @@ useEffect(() => {
     async function fetchReviews() {
         try {
             const respuestaAPI = await getReviewsByAnime(anime.id);
-            
-            // 🔍 Tu backend devuelve { ok: true, data: { reviews: [...] } }
             if (respuestaAPI && respuestaAPI.data && Array.isArray(respuestaAPI.data.reviews)) {
                 setReviews(respuestaAPI.data.reviews);
             } else if (respuestaAPI && Array.isArray(respuestaAPI.reviews)) {
@@ -224,7 +209,6 @@ useEffect(() => {
     fetchReviews();
 }, [anime.id]);
 
-// 📤 Manejar la publicación de la review
 const handlePublishReview = async () => {
     if (!reviewText.trim()) return;
 
@@ -244,14 +228,13 @@ const handlePublishReview = async () => {
         ...nuevaReviewRaw,
         usuario_id: {
             ...nuevaReviewRaw.usuario_id,
-            nombre: nombreUsuarioActual // ✨ ¡Cero trampas! Ahora es 100% real
+            nombre: nombreUsuarioActual 
         }
     };
         setReviews(prev => {
         const listaSegura = Array.isArray(prev) ? prev : [];
         return [nuevaReviewPopulada, ...listaSegura];
     });
-        // Reset del formulario
         setReviewText("");
         setSelectedStars(0);
     } catch (error) {
@@ -267,16 +250,11 @@ const handleLikeClick = async (reviewId) => {
     try {
         const res = await toggleLikeReview(reviewId);
         if (res.ok) {
-            // Actualizamos dinámicamente las reviews mutando el array en el estado
             setReviews(prevReviews => 
                 prevReviews.map(r => {
                     const currentId = r.review?._id || r._id;
                     if (currentId === reviewId) {
-                        // Clonamos la review y le actualizamos los likes con lo que mandó el backend
                         const reviewData = r.review ? { ...r.review } : { ...r };
-                        
-                        // Si guardás el ID del usuario en tu AuthContext, podés hacer toggle visual real acá
-                        // Por simplicidad, usamos el contador exacto que ya te devuelve tu backend en data.likes
                         if(r.review) {
                             return { ...r, review: { ...reviewData, likes: new Array(res.data.likes).fill(1) } };
                         } else {
@@ -296,7 +274,6 @@ const handlePublishReply = async (reviewId) => {
     try {
         const res = await addReplyToReview(reviewId, replyText);
         if (res.ok) {
-            // Inyectamos las respuestas actualizadas que nos mandó el back en la review correspondiente
             setReviews(prevReviews => 
                 prevReviews.map(r => {
                     const currentId = r.review?._id || r._id;
@@ -310,8 +287,8 @@ const handlePublishReply = async (reviewId) => {
                     return r;
                 })
             );
-            setReplyText(""); // Limpiamos el input de respuesta
-            setActiveReplyId(null); // Cerramos el formulario de respuesta
+            setReplyText(""); 
+            setActiveReplyId(null); 
         }
     } catch (error) {
         alert(error.message);
@@ -319,8 +296,6 @@ const handlePublishReply = async (reviewId) => {
 };
     return (
         <div className="detail-page">
-
-            {/* HERO */}
 
             <section
                 className="hero-banner"
@@ -730,8 +705,6 @@ const handlePublishReply = async (reviewId) => {
 
 </section>
 
-                    {/* RELACIONADOS */}
-
                     <section className="detail-card">
 
     <h2>Opening & Ending Themes</h2>
@@ -930,8 +903,6 @@ const handlePublishReply = async (reviewId) => {
 
 </section>
 
-                    {/* COMENTARIOS */}
-
                     <section className="detail-card" ref={commentsRef}>
 
     <h2>Community Reviews</h2>
@@ -943,10 +914,7 @@ const handlePublishReply = async (reviewId) => {
     <div className="reviews-container">
     {Array.isArray(reviews) && reviews.length > 0 ? (
         reviews.map((review) => {
-            // Aseguramos capturar el objeto limpio sin importar de qué endpoint venga
             const reviewData = review.review ? review.review : review;
-
-            // 🌟 LEEMOS 'nombre' QUE VIENE DE TU POPULATE DEL BACKEND
             const username = 
                 reviewData.usuario_id?.nombre || 
                 reviewData.usuario?.nombre || 
@@ -954,8 +922,6 @@ const handlePublishReply = async (reviewId) => {
                 "Anonymous";
                 
             const inicial = username.charAt(0).toUpperCase();
-            
-            // Leemos la imagen de perfil si el usuario la tiene configurada
             const userAvatarUrl = reviewData.usuario_id?.imagen_url || reviewData.usuario_id?.imagen_url;
 
             const estrellasRellenas = Math.round((reviewData.puntuacion || 10) / 2);
@@ -995,8 +961,6 @@ const handlePublishReply = async (reviewId) => {
         <p className="review-text">{textoComentario}</p>
         
         <div className="review-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-    
-    {/* 🌟 Agrupamos el contador y el botón juntos a la izquierda */}
     <div className="review-likes-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <span className="review-likes" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             ❤️ {reviewData.likes?.length || 0}
@@ -1009,8 +973,6 @@ const handlePublishReply = async (reviewId) => {
             👍
         </button>
     </div>
-
-    {/* El botón de Reply se mantiene a la derecha o al lado según prefieras */}
     {isLogged && (
         <button 
             className="review-reply-toggle-btn"
@@ -1024,10 +986,7 @@ const handlePublishReply = async (reviewId) => {
         </button>
     )}
 </div>
-
-        {/* --- SECCIÓN DE RESPUESTAS INTERNAS --- */}
 <div className="review-replies-section">
-    {/* Listar respuestas existentes */}
     {reviewData.respuestas && reviewData.respuestas.length > 0 && (
         <div className="replies-list">
             {reviewData.respuestas.map((reply) => {
@@ -1057,7 +1016,6 @@ const handlePublishReply = async (reviewId) => {
         </div>
     )}
 
-    {/* Formulario para escribir una respuesta */}
     {activeReplyId === (reviewData._id || reviewData.id) && (
         <div className="reply-form-box">
             <input 

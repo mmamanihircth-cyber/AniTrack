@@ -5,11 +5,8 @@ import ServerError from '../helpers/serverError.helper.js';
 import mongoose from 'mongoose';
 
 class InteractionController {
-    
-    // 1. CREAR O ACTUALIZAR UN COMENTARIO/RESEÑA (Recibe el anime_id de texto del Front)
     async createOrUpdateReview(request, response) {
     try {
-        // Usamos consistentemente 'request' que es como entra por parámetro
         const usuario_id = request.user.id; 
         const { anime_id, puntuacion, comentario } = request.body;
 
@@ -20,12 +17,11 @@ class InteractionController {
             });
         }
 
-        // Realizamos la búsqueda, actualización y populación en una sola cadena limpia
         const review = await Review.findOneAndUpdate(
-            { usuario_id: usuario_id, anime_id }, // 🌟 Corregido a usuario_id
+            { usuario_id: usuario_id, anime_id }, 
             { puntuacion, comentario },
             { new: true, upsert: true }
-        ).populate('usuario_id', 'username avatarUrl'); // 🌟 Un solo populate encadenado
+        ).populate('usuario_id', 'username avatarUrl'); 
 
         if (!review) {
             return response.status(400).json({ 
@@ -47,7 +43,6 @@ class InteractionController {
         });
     }
 }
-    // 2. DAR O QUITAR LIKE (Toggle) + Crear Notificación
 async toggleLike(request, response) {
     try {
         const usuario_id = request.user.id;            
@@ -55,20 +50,13 @@ async toggleLike(request, response) {
 
         const review = await Review.findById(review_id);
         if (!review) throw new ServerError("No se encontró el comentario", 404);
-
-        // Si ya tenía dislike, se lo sacamos
         review.dislikes = review.dislikes.filter(id => id.toString() !== usuario_id);
-
-        // Si ya tenía like, se lo quitamos. Si no, lo agregamos.
         const yaTieneLike = review.likes.includes(usuario_id);
         if (yaTieneLike) {
             review.likes = review.likes.filter(id => id.toString() !== usuario_id);
         } else {
             review.likes.push(usuario_id);
-            
-            // Creamos una notificación para el dueño del comentario (si no es él mismo)
             if (review.usuario_id.toString() !== usuario_id) {
-                // Buscamos de forma segura el ID del anime para armar la URL
                 const animeId = review.anime_id || review.animeId || 'comentarios';
 
                 await Notification.create({
@@ -76,7 +64,6 @@ async toggleLike(request, response) {
                     tipo: 'like',
                     mensaje: `¡A un usuario le gustó tu comentario!`,
                     leido: false,
-                    // Redirige al anime e impacta directo en el id del comentario
                     redirection_url: `/anime/${animeId}#review-${review._id}`
                 });
             }
@@ -89,8 +76,6 @@ async toggleLike(request, response) {
         return response.status(500).json({ ok: false, message: "Error al procesar el like" });
     }
 }
-
-    // 3. DAR O QUITAR DISLIKE (Toggle)
     async toggleDislike(request, response) {
         try {
             const usuario_id = request.user.id;
@@ -115,8 +100,6 @@ async toggleLike(request, response) {
             return response.status(500).json({ ok: false, message: "Error al procesar el dislike" });
         }
     }
-
-    // 4. RESPONDER A UN COMENTARIO + Crear Notificación
     async addReply(request, response) {
         try {
             const usuario_id = request.user.id;
@@ -130,10 +113,7 @@ async toggleLike(request, response) {
 
             review.respuestas.push({ usuario_id, texto });
             await review.save();
-
-            // Notificamos al creador de la reseña original
             if (review.usuario_id.toString() !== usuario_id) {
-                // 🟢 CORREGIDO: Mismos campos estandarizados para persistencia
                 await Notification.create({
                     usuario_destino_id: review.usuario_id,
                     tipo: 'respuesta',
@@ -149,7 +129,6 @@ async toggleLike(request, response) {
         }
     }
 
-    // 5. AGREGAR O ACTUALIZAR ESTADO EN MI LISTA PERSONAL
     async addOrUpdateInList(request, response) {
     try {
         const usuario_id = request.user.id;
@@ -197,7 +176,6 @@ async toggleLike(request, response) {
 
     }
 }
-    // 6. AGREGAR O QUITAR FAVORITO
 async toggleFavorite(request, response) {
     try {
         const { anime_id } = request.body;
@@ -208,16 +186,12 @@ async toggleFavorite(request, response) {
                 message: "El ID del anime es obligatorio"
             });
         }
-
-        // Convertimos el id del usuario a ObjectId de Mongoose para que no falle la consulta
         const usuario_id = new mongoose.Types.ObjectId(request.user.id);
 
         let itemLista = await UserList.findOne({
             usuario_id: usuario_id,
             anime_id: anime_id
         });
-
-        // Si no existe, lo agregamos automáticamente a la lista
         if (!itemLista) {
             itemLista = await UserList.create({
                 usuario_id: usuario_id,
@@ -233,8 +207,6 @@ async toggleFavorite(request, response) {
                 data: { itemLista }
             });
         }
-
-        // Si existe, invertimos el estado del favorito
         itemLista.favorito = !itemLista.favorito;
         await itemLista.save();
 
@@ -248,19 +220,16 @@ async toggleFavorite(request, response) {
         });
 
     } catch (error) {
-        console.error("Error real en backend:", error); // Esto te va a mostrar en la consola local qué pasó exactamente
+        console.error("Error real en backend:", error); 
         return response.status(500).json({
             ok: false,
             message: error.message || "Error al actualizar favoritos"
         });
     }
 }
-// 7. OBTENER MI LISTA PERSONAL DE ANIMES (Sin populate por el cambio de estrategia)
     async getMyList(request, response) {
         try {
             const usuario_id = request.user.id;
-            
-            // Trae los objetos con el ID de texto del anime y su estado (viendo, completado, etc)
             const miLista = await UserList.find({ usuario_id });
 
             return response.status(200).json({
@@ -272,7 +241,6 @@ async toggleFavorite(request, response) {
             return response.status(500).json({ ok: false, message: "Error al obtener tu lista" });
         }
     }
-// 7. OBTENER MIS FAVORITOS
 async getMyFavorites(request, response) {
 
     try {
@@ -301,13 +269,9 @@ async getMyFavorites(request, response) {
     }
 
 }
-
-    // 8. NUEVO MÉTODO: OBTENER COMENTARIOS CON LA INFO DEL USUARIO PEGADA (Populate)
     async getReviewsByAnime(request, response) {
         try {
             const { anime_front_id } = request.params;
-
-            // Busca comentarios del anime e inyecta nombre, email y foto de perfil de los autores automáticamente
             const reviews = await Review.find({ anime_id: anime_front_id })
                 .populate('usuario_id', 'nombre email imagen_url') 
                 .populate('respuestas.usuario_id', 'nombre imagen_url') 

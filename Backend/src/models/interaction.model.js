@@ -7,20 +7,20 @@ const USER_REF_NAME = "User";
 
 const interactionSchema = new mongoose.Schema({
     fk_workspace_id: {
-        type: mongoose.Schema.ObjectId, // Copiado exacto de tu modelo de miembros
+        type: mongoose.Schema.ObjectId, 
         required: true,
-        ref: WORKSPACE_REF_NAME // Apunta dinámicamente a tu colección de comunidades/workspaces
+        ref: WORKSPACE_REF_NAME 
     },
     fk_user_id: {
         type: mongoose.Schema.ObjectId,
         required: true,
-        ref: USER_REF_NAME // Apunta a tu colección de usuarios para poder hacer el populate
+        ref: USER_REF_NAME 
     },
     contenido: {
         type: String,
         required: true,
         trim: true,
-        maxLength: 1000 // Un buen margen para teorías de anime o debates largos
+        maxLength: 1000 
     },
     fecha_creacion: {
         type: Date,

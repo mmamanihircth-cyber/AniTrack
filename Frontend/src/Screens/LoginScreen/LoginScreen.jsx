@@ -39,15 +39,11 @@ export const LoginScreen = () => {
     } = useForm(initial_form_state, onSubmit);
     return (
         <div className="login-page-container">
-            {/* Fondo */}
             <div className="background-overlay"></div>
-            {/* Flecha volver */}
             <Link to="/home" className="back-home-btn">
                 ← Home
             </Link>
-            {/* Card */}
             <div className="login-card">
-                {/* Logo */}
                 <div className="login-logo">
                     <h1>
                         Ani<span>Track</span>
@@ -56,7 +52,6 @@ export const LoginScreen = () => {
                         Track your anime journey.
                     </p>
                 </div>
-                {/* Formulario */}
                 <form
                     className="login-form"
                     onSubmit={handleSubmit}
@@ -66,7 +61,6 @@ export const LoginScreen = () => {
                             {loginRequestError}
                         </div>
                     )}
-                    {/* Email */}
                     <div className="form-group">
                         <label htmlFor="email">
                             Username or Email
@@ -81,7 +75,6 @@ export const LoginScreen = () => {
                             required
                         />
                     </div>
-                    {/* Password */}
                     <div className="form-group">
                         <label htmlFor="password">
                             Password
@@ -103,7 +96,7 @@ export const LoginScreen = () => {
                                     setShowPassword(!showPassword)
                                 }
                             >
-{/*                                 {showPassword ? '🙈' : '👁'} */}
+                                {showPassword ? '🙈' : '👁'}
                             </button>
                         </div>
                     </div>
@@ -119,7 +112,6 @@ export const LoginScreen = () => {
                             ? 'Logging in...'
                             : 'Login'}
                     </button>
-                    {/* Links */}
                     <div className="login-links">
                         <button
                             type="button"
@@ -135,7 +127,6 @@ export const LoginScreen = () => {
                         </button>
                     </div>
                 </form>
-                {/* Footer */}
                 <div className="login-footer">
                     <span>
                         Don't have an account?

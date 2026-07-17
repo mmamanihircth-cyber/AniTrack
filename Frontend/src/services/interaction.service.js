@@ -76,15 +76,11 @@ export async function getFavorites() {
     }
 
 }
-// 📥 Obtener todos los comentarios de un anime (RUTA PÚBLICA)
 export async function getReviewsByAnime(anime_id) {
     try {
-        // 🌟 CAMBIO ACÁ: Agregamos '/anime/' en la URL como pide tu backend
         const response_http = await fetch(`${API_URL}/review/anime/${anime_id}`);
         
         const data = await response_http.json();
-        
-        // Retornamos el array de reviews (adaptalo si tu controller devuelve data.reviews o directo el array)
         if (response_http.ok) {
             return data.reviews || data.data || (Array.isArray(data) ? data : []);
         }
@@ -95,12 +91,9 @@ export async function getReviewsByAnime(anime_id) {
     }
 }
 
-// 📤 Publicar una review (REQUIERE AUTH)
 export async function createReview(anime_id, puntuacion, comentario) {
     try {
         const token = getAuthToken();
-        
-        // 🌟 RUTA: '/review' (esta estaba bien, pero aseguramos el tipado interno)
         const response_http = await fetch(`${API_URL}/review`, {
             method: "POST",
             headers: {
@@ -108,7 +101,7 @@ export async function createReview(anime_id, puntuacion, comentario) {
                 Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
-                anime_id: String(anime_id), // Lo forzamos a String para tu esquema
+                anime_id: String(anime_id), 
                 puntuacion: Number(puntuacion),
                 comentario
             })
@@ -163,7 +156,6 @@ export async function addOrUpdateInList(anime_id, estado) {
     }
 
 }
-// 📤 Dar o quitar Like (Toggle) - REQUIERE AUTH
 export async function toggleLikeReview(review_id) {
     try {
         const token = getAuthToken();
@@ -175,14 +167,13 @@ export async function toggleLikeReview(review_id) {
         });
         const data = await response_http.json();
         if (!response_http.ok) throw new Error(data.message || "Error al procesar el like");
-        return data; // Devuelve { ok: true, message: "...", data: { likes: X } }
+        return data; 
     } catch (error) {
         console.error("Error en toggleLikeReview:", error);
         throw error;
     }
 }
 
-// 📤 Enviar una respuesta a una Review - REQUIERE AUTH
 export async function addReplyToReview(review_id, texto) {
     try {
         const token = getAuthToken();
@@ -196,14 +187,14 @@ export async function addReplyToReview(review_id, texto) {
         });
         const data = await response_http.json();
         if (!response_http.ok) throw new Error(data.message || "Error al enviar la respuesta");
-        return data; // Devuelve { ok: true, message: "...", data: { respuestas: [...] } }
+        return data; 
     } catch (error) {
         console.error("Error en addReplyToReview:", error);
         throw error;
     }
 }
 
-// Obtener todo el feed de debates de una comunidad (Workspace)
+
 export async function getWorkspaceFeed(workspaceId, token) {
     try {
         const response = await fetch(`https://anitrack-back.vercel.app/api/interactions/workspace/${workspaceId}`, {
@@ -220,7 +211,6 @@ export async function getWorkspaceFeed(workspaceId, token) {
     }
 };
 
-// Publicar un nuevo post en la comunidad
 export async function createWorkspacePost(workspaceId, contenido, token) {
     try {
         const response = await fetch(`https://anitrack-back.vercel.app/api/interactions/workspace/${workspaceId}`, {

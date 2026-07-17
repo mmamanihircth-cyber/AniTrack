@@ -2,29 +2,23 @@ import { MEMBER_WORKSPACE_ROLES } from "../constants/memberRoles.constant.js";
 import ServerError from "../helpers/serverError.helper.js";
 import workspaceRepository from "../repositories/workspace.repository.js";
 import workspaceMemberRepository from "../repositories/workspaceMember.repository.js";
-import MEMBER_INVITATION_STATUS from "../constants/memberInvitationStatus.constant.js"; // 👈 Asegurá que la ruta sea correcta
+import MEMBER_INVITATION_STATUS from "../constants/memberInvitationStatus.constant.js"; 
 
 
 class WorkspaceController {
     async create(request, response) {
         try {
             const { nombre, descripcion, imagen_url } = request.body;
-            
-            //Para que esto funcione se debe ejecutar previamente el authMiddleware
             const user_id = request.user.id; 
 
             if (!nombre || nombre.trim() === '') {
                 throw new ServerError("El nombre del espacio de trabajo es obligatorio", 400);
             }
-
-            //crea el espacio de trabajo
             const newWorkspace = await workspaceRepository.create(
                 nombre, 
                 descripcion || '',
                 imagen_url || ''
             );
-
-            //creamos la membresia del dueño
             await workspaceMemberRepository.create(
                 user_id, 
                 newWorkspace._id, 
@@ -59,9 +53,6 @@ class WorkspaceController {
     async getAllByUser(req, res) {
         try {
             const user_id = req.user.id;
-
-            //Quiero obtener la lista de membresias de un usuario
-            //Y cada membresia traera consigo la info del espacio de trabajo asociado
             const workspaces = await workspaceMemberRepository.getByUserId(user_id);
 
             return res.status(200).json({
@@ -168,13 +159,9 @@ class WorkspaceController {
         }
     }
 
-    // Dentro de tu clase WorkspaceController:
-
 async getById(req, res, next) {
     try {
         const { workspace_id } = req.params;
-        
-        // Buscamos el workspace usando tu repositorio
         const workspace = await workspaceRepository.getById(workspace_id);
         
         if (!workspace) {
@@ -197,7 +184,7 @@ async getById(req, res, next) {
 }
 async getAllPublic(req, res, next) {
     try {
-        const workspaces = await workspaceRepository.getAllActive(); // Que traiga todos con { estado: true }
+        const workspaces = await workspaceRepository.getAllActive();
         return res.status(200).json({
             ok: true,
             data: { workspaces }

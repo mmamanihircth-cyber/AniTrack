@@ -10,7 +10,6 @@ class AuthController {
         try {
             const { name, email, password, imagen_url } = req.body;
 
-            // Validaciones
             if (!name || name.length <= 2) {
                 throw new ServerError("Nombre debe ser mayor a 2 caracteres", 400)
             }
@@ -158,8 +157,6 @@ class AuthController {
             if(!is_same_password){
                 throw new ServerError("Credenciales invalidas", 401)
             }
-
-            //Ese objeto es el que se guardara dentro del token de authorizacion
             const profile_info = {
                 nombre: user_found.nombre,
                 email: user_found.email,
@@ -168,7 +165,6 @@ class AuthController {
                 imagen_url: user_found.imagen_url
             }
 
-            //Aca creamos el token
             const access_token = jwt.sign(
                 profile_info,
                 ENVIRONMENT.JWT_SECRET
@@ -214,8 +210,6 @@ class AuthController {
             }
 
             const user = await userRepository.getByEmail(email);
-
-            //Esto es una decision de negocio, no quiere decir que siempre deba ser asi, un 404 not found podria estar bien tambien o
             if (!user) {
                 return response.status(200).json({
                     ok: true,
@@ -229,7 +223,7 @@ class AuthController {
             const token = jwt.sign(
                 { email: user.email, id: user._id },
                 secret_key,
-                { expiresIn: '15m' } //El token expiran en 15m
+                { expiresIn: '15m' } 
             );
 
             const reset_link = `${ENVIRONMENT.URL_FRONTEND}/reset-password?token=${token}`;
@@ -246,7 +240,6 @@ class AuthController {
                 `
             });
 
-            //RETURN EXITO REAL
             return response.status(200).json({
                 ok: true,
                 status: 200,
@@ -343,7 +336,6 @@ class AuthController {
 
     async profile(request, response) {
     try {
-        // request.user va a tener los datos en cuanto configuremos Vercel
         const user = request.user; 
 
         return response.status(200).json({
@@ -366,35 +358,50 @@ class AuthController {
 }
 async updateProfile(req, res) {
     try {
-        const { imagen_url } = req.body;
-        const user = req.user; // Si tu authMiddleware inyecta el usuario decodificado en req.user
+        let { imagen_url } = req.body;
+        const user = req.user; 
 
         if (!imagen_url) {
             throw new ServerError("La URL de la imagen es obligatoria", 400);
         }
 
-        // Actualizamos en la base de datos usando tu repositorio
-        const updatedUser = await userRepository.updateById(user.id || user._id, { imagen_url });
+        if (!imagen_url.endsWith('.png') && !imagen_url.endsWith('.jpg') && !imagen_url.endsWith('.jpeg')) {
+            imagen_url = `${imagen_url}.png`;
+        }
+
+        console.log("===> DEBUG UPDATE PROFILE <===");
+        console.log("Objeto req.user completo:", user);
+        
+        const userId = user?.id || user?._id || user?.id_usuario;
+        console.log("ID detectado para la búsqueda:", userId);
+
+        if (!userId) {
+            throw new ServerError("No se encontró un ID válido en el token del usuario", 401);
+        }
+
+        const updatedUser = await userRepository.updateById(userId, { imagen_url });
+
+        if (!updatedUser) {
+            throw new ServerError("El usuario no existe en la base de datos JSON", 404);
+        }
 
         return res.status(200).json({
             ok: true,
             status: 200,
             message: "Perfil actualizado con éxito",
-            data: {
-                imagen_url: updatedUser.imagen_url
-            }
+            data: updatedUser
         });
+
     } catch (error) {
         if (error instanceof ServerError) {
-            return res.status(error.status).json({
-                message: error.message,
-                ok: false,
-                status: error.status
-            });
+            return res.status(error.status).json({ message: error.message, ok: false, status: error.status });
         }
-        console.error("Error en updateProfile controller:", error);
+        
+        console.error("CRASH REAL EN UPDATEPROFILE:", error.message);
+        console.error(error.stack); 
+
         return res.status(500).json({
-            message: "Error interno del servidor",
+            message: `Error interno del servidor: ${error.message}`,
             ok: false,
             status: 500
         });

@@ -19,7 +19,6 @@ export const RegisterScreen = () => {
         box_response: registerResponse
     } = useRequest();
 
-    // 🌟 Sincronizado con tu backend: desestructurás { name, email, password }
     const initial_form_state = {
         name: '',
         email: '',
@@ -62,7 +61,6 @@ export const RegisterScreen = () => {
                         </div>
                     )}
 
-                    {/* Full Name */}
                     <div className="form-group">
                         <label htmlFor="name">Full Name</label>
                         <input
@@ -76,7 +74,6 @@ export const RegisterScreen = () => {
                         />
                     </div>
 
-                    {/* Email */}
                     <div className="form-group">
                         <label htmlFor="email">Email Address</label>
                         <input
@@ -90,7 +87,6 @@ export const RegisterScreen = () => {
                         />
                     </div>
 
-                    {/* Password */}
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
                         <div className="password-wrapper">
@@ -116,7 +112,6 @@ export const RegisterScreen = () => {
                     <div className="avatar-form-group">
     <label className="avatar-label">Choose Profile Character</label>
     
-    {/* Botón del Selector */}
     <div className="avatar-dropdown-btn" onClick={() => setIsOpen(!isOpen)}>
         <div className="avatar-btn-left">
             <img 
@@ -131,7 +126,6 @@ export const RegisterScreen = () => {
         </span>
     </div>
 
-    {/* Menú Desplegable Absoluto */}
     {isOpen && (
         <div className="avatar-dropdown-menu">
             {AVAILABLE_AVATARS.map((avatar) => {

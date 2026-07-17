@@ -12,12 +12,11 @@ export const HomeScreen = () => {
   const navigate = useNavigate()
   const [busqueda, setBusqueda] = useState('')
   const [userList, setUserList] = useState([])
-//  DEJÁ SOLO ESTAS TRES EN LA PARTE DE ARRIBA:
+
 const topAiring = MIS_ANIMES.filter(anime => anime.estado === 'airing');
 
 const topUpcoming = MIS_ANIMES.filter(anime => anime.estado === 'not_yet_aired');
 
-// Filtramos por terminados y los ordenamos de mayor a menor score para que sea un "Top Popular" real
 const topPopular = MIS_ANIMES.filter(anime => anime.estado === 'finished_airing')
                              .sort((a, b) => Number(b.ranking) - Number(a.ranking));
 
@@ -50,15 +49,11 @@ const topPopular = MIS_ANIMES.filter(anime => anime.estado === 'finished_airing'
   const handleQuickAdd = async (animeId) => {
     try {
         const data = await toggleFavorite(animeId);
-        
-        // 🔄 Verificamos si ya estaba agregado en nuestro estado local
         const yaEsta = userList.some(item => item.anime_id === animeId);
 
         if (yaEsta) {
-            // Si ya estaba, significa que el backend lo SACÓ. Lo borramos del estado local.
             setUserList(prev => prev.filter(item => item.anime_id !== animeId));
         } else {
-            // Si no estaba, el backend lo AGREGÓ. Lo sumamos al estado local.
             setUserList(prev => [...prev, { anime_id: animeId }]);
         }
     } catch (error) {
@@ -67,7 +62,6 @@ const topPopular = MIS_ANIMES.filter(anime => anime.estado === 'finished_airing'
     }
   };
 
-  // 🔍 Filtro para la barra de búsqueda central
   const animesFiltrados = MIS_ANIMES.filter(anime => 
     anime.titulo.toLowerCase().includes(busqueda.toLowerCase())
   )
@@ -75,7 +69,6 @@ const topPopular = MIS_ANIMES.filter(anime => anime.estado === 'finished_airing'
   return (
     <div className="mal-container">
       
-      {/* 🔹 HEADER ACTUALIZADO (Con buscador y botones) */}
       <header className="mal-header">
         <div className="header-logo" onClick={() => navigate('/home')}>
           <h1 className="logo-title">
@@ -83,7 +76,6 @@ const topPopular = MIS_ANIMES.filter(anime => anime.estado === 'finished_airing'
 </h1>
         </div>
 
-        {/* 🔍 BARRA DE BÚSQUEDA CENTRAL */}
         <div className="header-search-container">
           <input 
             type="text" 
@@ -153,10 +145,8 @@ const topPopular = MIS_ANIMES.filter(anime => anime.estado === 'finished_airing'
         </div>
       </header>
 
-      {/* 🔹 CUERPO PRINCIPAL */}
       <div className="mal-layout">
         
-        {/* Columna Izquierda: Catálogo dinámico */}
         <main className="mal-main-content">
           <div className="welcome-banner" style={{
         backgroundImage: `url(${homeBanner})`
@@ -201,7 +191,6 @@ const topPopular = MIS_ANIMES.filter(anime => anime.estado === 'finished_airing'
           <div className="anime-grid">
             {animesFiltrados.length > 0 ? (
               animesFiltrados.map((anime) => {
-                // 🔍 Cruce de datos clave: Verificamos si este anime ya está guardado en la lista del usuario
                 const yaEstaAgregado = userList.some(item => item.anime_id === anime.id);
 
                 return (
@@ -235,7 +224,6 @@ const topPopular = MIS_ANIMES.filter(anime => anime.estado === 'finished_airing'
                         <span className="meta-eps">{anime.episodios} eps</span>
                         <span className="meta-members">👥 {anime.miembros} members</span>
                         
-                        {/* 🎨 BOTÓN INTERACTIVO MODIFICADO */}
                         <button 
   className={yaEstaAgregado ? "btn-added" : "btn-primary"}
   onClick={() => handleQuickAdd(anime.id)} 
@@ -253,10 +241,8 @@ const topPopular = MIS_ANIMES.filter(anime => anime.estado === 'finished_airing'
           </div>
         </main>
 
-        {/* Columna Derecha: Bloques Apilados */}
         <aside className="mal-sidebar">
           
-          {/* Bloque 1: Top Airing */}
           <div className="sidebar-section">
             <h3 className="sidebar-title">Top Airing Anime</h3>
             <ul className="top-anime-list">
@@ -281,7 +267,6 @@ const topPopular = MIS_ANIMES.filter(anime => anime.estado === 'finished_airing'
 </div>
           </div>
 
-          {/* Bloque 2: Top Upcoming (Abajo del anterior) */}
           <div className="sidebar-section" style={{ marginTop: '30px' }}>
             <h3 className="sidebar-title">Top Upcoming Anime</h3>
             <ul className="top-anime-list">

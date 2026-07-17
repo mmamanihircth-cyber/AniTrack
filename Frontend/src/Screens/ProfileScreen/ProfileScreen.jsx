@@ -34,13 +34,10 @@ setMyList(responseList.data?.miLista || []);
     }, []);
 
     useEffect(() => {
-    // 🟢 Cambiamos a userData.imagen_url y sumamos una validación para evitar el string vacío
     if (userData && userData.imagen_url && userData.imagen_url.trim() !== "") {
         setSelectedAvatar(userData.imagen_url);
     } else if (userData) {
-        // Fallback: Si el usuario existe pero no tiene foto, le asignamos la primera por defecto
         setSelectedAvatar("/Avatars/avatar4.png"); 
-        // 💡 NOTA: Podés importar AVAILABLE_AVATARS[0].url y ponerlo acá como hicimos antes
     }
 }, [userData]);
 
@@ -52,22 +49,19 @@ setMyList(responseList.data?.miLista || []);
     const dropped = myList.filter(item => item.estado === "dropped").length;
 
     const handleSaveProfile = async () => {
-
-    try{
-
-        await updateProfile(selectedAvatar);
+    try {
+        const response = await updateProfile(selectedAvatar);
+        if (response && response.data) {
+            setUserData(response.data); 
+        }
 
         setEditingProfile(false);
-
+        alert("¡Avatar de Luffy guardado con éxito!");
+    } catch (error) {
+        console.error("Error al guardar en el cliente:", error);
+        alert("No se pudo guardar el personaje.");
     }
-
-    catch(error){
-
-        console.error(error);
-
-    }
-
-}
+};
 
     return (
         <main className="profile-page">
@@ -175,19 +169,13 @@ editingProfile && (
 
 <div className="profile-favorites">
     <h2>Mis Favoritos</h2>
-    
-    {/* Contenedor padre directo para que la grilla funcione impecable */}
     <div className={favorites.length > 0 ? "favorites-grid" : ""}>
         {
             favorites.length === 0
             ? <p>No tienes animes favoritos todavía.</p>
             : favorites.map(favorite => {
-    // 🔍 Buscamos en tu archivo de constantes el anime que coincida con el ID de la base de datos
     const animeData = MIS_ANIMES.find(anime => anime.id === favorite.anime_id);
-
-    // 🖼️ Si lo encuentra, usamos su imagen real. Si no (por las dudas), dejamos un fondo oscuro.
     const imageUrl = animeData ? animeData.imagen : "";
-    // 📝 Si lo encuentra usás el título oficial, si no, el ID de respaldo
     const titleToShow = animeData ? animeData.titulo : favorite.anime_id;
 
     return (

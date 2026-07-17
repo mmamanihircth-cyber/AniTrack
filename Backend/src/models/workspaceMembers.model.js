@@ -8,12 +8,12 @@ const workspaceMemberSchema = new mongoose.Schema({
     fk_workspace_id: {
         type: mongoose.Schema.ObjectId,
         required: true,
-        ref: WORKSPACE_COLLECTION_NAME // Apunta a la Comunidad
+        ref: WORKSPACE_COLLECTION_NAME 
     },
     fk_user_id: {
         type: mongoose.Schema.ObjectId,
         required: true,
-        ref: USER_COLLECTION_NAME // Apunta al Usuario
+        ref: USER_COLLECTION_NAME 
     },
     fecha_creacion: {
         type: Date,
@@ -23,11 +23,11 @@ const workspaceMemberSchema = new mongoose.Schema({
     rol: {
         type: String,
         enum: [MEMBER_WORKSPACE_ROLES.ADMIN, MEMBER_WORKSPACE_ROLES.OWNER, MEMBER_WORKSPACE_ROLES.USER],
-        default: MEMBER_WORKSPACE_ROLES.USER // Entra como 'Miembro' por defecto
+        default: MEMBER_WORKSPACE_ROLES.USER 
     },
     puesto_personalizado: {
         type: String,
-        default: "" // Ej: "Officer", "Creador de Contenido", "Fan de Kakashi"
+        default: "" 
     },
     estatus_invitacion: {
         type: String,

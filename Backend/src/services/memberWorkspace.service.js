@@ -1,8 +1,3 @@
-/* Es la capa de nuestra API encargada de la logica de negocios 
-La idea es separar las funcionalidades de nuestra aplicacion como servicios, de esta manera el controlador solo se ocupara de parte HTTP Request response y el servicio de la logica de negocios */
-
-/* quien invito, quien lo invito, el rol */
-
 import ENVIRONMENT from "../config/environment.config.js";
 import MEMBER_INVITATION_STATUS from "../constants/memberInvitationStatus.constant.js";
 import ServerError from "../helpers/serverError.helper.js";
@@ -15,10 +10,7 @@ const WORKSPACE_CONFIG = {
     INVITATION_MEMBERSHIP_EXPIRATION_DAYS: 30
 }
 
-/* 
-Es la capa de nuestra API encargada de la logica de negocio
-La idea es separar las funcionalidades de nuestra aplicacion como servicios, de esta manera el controlador solo se ocupara de parte HTTP Request response y el servicio de la logica de negocio
-*/
+
 class MemberWorkspaceService {
 
     /**
@@ -36,7 +28,6 @@ class MemberWorkspaceService {
             throw new ServerError("El usuario ingresado no existe en el sistema", 404);
         }
 
-        //Aca se decide que pasa si ya es miembro
         await this.verifyAlreadyMember(workspace_id, userToInvite._id)
 
 
@@ -104,7 +95,6 @@ class MemberWorkspaceService {
             }
 
             const ahora = new Date();
-            //Si el usuario ya esta invitado y es pendiente y su fecha de expiracion ya paso, eliminamos membresia y volvemos a crear. Sino lanzamos error
             if (isInvitedAlreadyMember.estatus_invitacion === MEMBER_INVITATION_STATUS.PENDING) {
 
                 if (isInvitedAlreadyMember.fecha_expiracion_invitacion > ahora) {
@@ -136,7 +126,6 @@ class MemberWorkspaceService {
     }
 
     getMembershipExpirationDate() {
-        //Calculamos una fecha de expiracion para la invitacion del miembro
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + WORKSPACE_CONFIG.INVITATION_MEMBERSHIP_EXPIRATION_DAYS);
         return expirationDate
