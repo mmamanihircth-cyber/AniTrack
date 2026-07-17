@@ -106,7 +106,7 @@ export const RegisterScreen = () => {
                                 className="toggle-password"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
-                                {showPassword ? <ImEyeBlocked /> : <ImEye />}
+                                {showPassword ? <ImEye /> : <ImEyeBlocked />}
                             </button>
                         </div>
                     </div>
