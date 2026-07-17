@@ -1,340 +1,150 @@
-/* ===========================================================
-   ANITRACK - ANIME DETAIL
-   PARTE 1/4
-=========================================================== */
-
 .detail-page{
     min-height:100vh;
     background:#070b16;
     color:#ECEFF8;
     font-family:Inter,Segoe UI,Arial,sans-serif;
 }
-
-
-/* ================= HERO ================= */
-
 .hero-banner{
-
     position:relative;
-
     width:100%;
-
     min-height:520px;
-
     background-position:center;
-
     background-size:cover;
-
     background-repeat:no-repeat;
-
     overflow:hidden;
-
 }
-
-
 .hero-banner::before{
-
     content:"";
-
     position:absolute;
-
     inset:0;
-
     backdrop-filter:blur(16px);
-
     background:linear-gradient(
         180deg,
         rgba(6,9,18,.45),
         rgba(6,9,18,.92)
     );
-
 }
-
-
 .hero-overlay{
-
     position:relative;
-
     z-index:2;
-
     max-width:1400px;
-
     margin:auto;
-
     padding:40px 70px 70px;
-
 }
-
-
-/* ================= BOTON HOME ================= */
-
 .back-home-btn{
-
     position:absolute;
-
     top:35px;
-
     left:45px;
-
     z-index:20;
-
     border:none;
-
     background:transparent;
-
     color:#9fb4ff;
-
     cursor:pointer;
-
     font-size:15px;
-
     transition:.25s;
-
 }
-
 .back-home-btn:hover{
-
     color:white;
-
     transform:translateX(-4px);
-
 }
-
-
-
-/* ================= CONTENIDO HERO ================= */
-
-
 .hero-content{
-
     display:flex;
-
     flex-direction:column;
-
     gap:50px;
-
 }
-
 .hero-top{
-
     display:flex;
-
     align-items:flex-start;
-
     gap:55px;
-
     margin-top: 60px;
-
 }
-
-
-/* ================= POSTER ================= */
-
 .hero-poster{
-
     width:250px;
-
     flex-shrink:0;
-
     border-radius:20px;
-
     box-shadow:0 18px 45px rgba(0,0,0,.45);
-
 }
-
-/* .hero-poster img{
-
-    width:100%;
-
-    display:block;
-
-    border-radius:18px;
-
-    box-shadow:0 18px 45px rgba(0,0,0,.55);
-
-    border:2px solid rgba(255,255,255,.08);
-
-} */
-
-
-/* ================= INFORMACION ================= */
-
 .hero-info{
-
     flex:1;
-
     display:flex;
-
     flex-direction:column;
-
     justify-content:center;
-
 }
-
-
 .hero-type{
-
     display:inline-flex;
-
     align-items:center;
-
     justify-content:center;
-
     width:fit-content;
-
     padding:7px 16px;
-
     margin-bottom:18px;
-
     border-radius:999px;
-
     background:linear-gradient(135deg,#4C82FF,#6DA2FF);
-
     color:white;
-
     font-size:13px;
-
     font-weight:700;
-
     letter-spacing:.8px;
-
     text-transform:uppercase;
-
 }
-
-
 .hero-info h1{
-
     font-size:56px;
-
     line-height:1.05;
-
     margin-bottom:18px;
-
     font-weight:800;
-
     letter-spacing:-1px;
-
 }
-
-
 .hero-status{
-
     color:#B7C2E8;
-
     font-size:18px;
-
     margin-bottom:10px;
-
 }
-
-
-/* ================= SCORE ================= */
-
 .hero-score{
-
     display:flex;
-
     align-items:center;
-
     gap:45px;
-
     margin-top:35px;
-
 }
-
-
 .score-circle{
-
     width:120px;
-
     height:120px;
-
     border-radius:50%;
-
     background:linear-gradient(
         145deg,
         #3B82F6,
         #5E8BFF
     );
-
     display:flex;
-
     flex-direction:column;
-
     justify-content:center;
-
     align-items:center;
-
     box-shadow:
     0 12px 35px rgba(59,130,246,.35);
-
 }
-
-
 .score-number{
-
     font-size:36px;
-
     font-weight:800;
-
 }
-
-
 .score-text{
-
     margin-top:4px;
-
     font-size:13px;
-
     opacity:.85;
-
 }
-/* ===========================================================
-   ANITRACK - ANIME DETAIL
-   PARTE 2/4
-=========================================================== */
-
-
-/* ================= ESTADISTICAS ================= */
-
 .score-stats{
-
     display:flex;
-
     gap:55px;
-
 }
-
 .score-stats div{
-
     display:flex;
-
     flex-direction:column;
-
 }
-
 .score-stats strong{
-
     font-size:24px;
-
     color:white;
-
 }
-
 .score-stats span{
-
     margin-top:6px;
-
     color:#9AA8D1;
-
     font-size:14px;
-
 }
-
-
-/* ================= BOTONES ================= */
-
 .hero-buttons{
 
     display:flex;
@@ -409,9 +219,6 @@
 
 }
 
-
-/* ================= CONTENIDO ================= */
-
 .detail-content{
 
     max-width:1400px;
@@ -428,9 +235,6 @@
 
 }
 
-
-/* ================= SIDEBAR ================= */
-
 .detail-sidebar{
 
     display:flex;
@@ -440,9 +244,6 @@
     gap:25px;
 
 }
-
-
-/* ================= TARJETA INFO ================= */
 
 .info-card{
 
@@ -485,9 +286,6 @@
 
 }
 
-
-/* ================= CONTENIDO PRINCIPAL ================= */
-
 .detail-main{
 
     display:flex;
@@ -497,9 +295,6 @@
     gap:28px;
 
 }
-
-
-/* ================= TARJETAS ================= */
 
 .detail-card{
 
@@ -547,17 +342,6 @@
     font-size:15px;
 
 }
-/* ===========================================================
-   ANITRACK - ANIME DETAIL
-   PARTE 3/4
-=========================================================== */
-
-
-/* ===========================
-        CHARACTERS
-=========================== */
-
-
 .characters-grid{
 
     display:grid;
@@ -671,10 +455,6 @@
 
 }
 
-/* ===========================
-        RELATED
-=========================== */
-
 .related-grid{
 
     display:grid;
@@ -738,11 +518,6 @@
 
 }
 
-
-/* ===========================
-        COMMENTS
-=========================== */
-
 .comment-form{
 
     display:flex;
@@ -797,11 +572,6 @@
 
 }
 
-
-/* ===========================
-        COMMENT
-=========================== */
-
 .comment{
 
     background:#161E30;
@@ -841,15 +611,6 @@
     line-height:1.8;
 
 }
-
-
-/* ===========================
-    LOGIN REQUIRED
-=========================== */
-
-/* ===========================
-      LOGIN REQUIRED
-=========================== */
 
 .login-required{
 
@@ -927,10 +688,6 @@
 
 }
 
-/* ===========================
-        SCROLLBAR
-=========================== */
-
 .comment-form textarea::-webkit-scrollbar{
 
     width:8px;
@@ -944,16 +701,6 @@
     border-radius:50px;
 
 }
-
-/* ===========================================================
-   ANITRACK - ANIME DETAIL
-   PARTE 4/4
-=========================================================== */
-
-
-/* ===========================
-      FONDO DECORATIVO
-=========================== */
 
 .detail-page{
 
@@ -1015,9 +762,6 @@
 
 }
 
-
-/* Todo el contenido queda por encima */
-
 .hero-banner,
 .detail-content{
 
@@ -1026,11 +770,6 @@
     z-index:2;
 
 }
-
-
-/* ===========================
-      ANIMACIONES
-=========================== */
 
 @keyframes fadeUp{
 
@@ -1069,12 +808,6 @@
     animation:fadeUp .7s ease;
 
 }
-
-
-/* ===========================
-      IMÁGENES
-=========================== */
-
 .hero-poster{
 
     transition:.35s;
@@ -1099,11 +832,6 @@
 
 }
 
-
-/* ===========================
-      BOTONES
-=========================== */
-
 .btn-primary:active,
 .btn-secondary:active{
 
@@ -1111,21 +839,11 @@
 
 }
 
-
-/* ===========================
-      SCROLL
-=========================== */
-
 html{
 
     scroll-behavior:smooth;
 
 }
-
-
-/* ===========================
-      RESPONSIVE TABLET
-=========================== */
 
 @media(max-width:1100px){
 
@@ -1156,11 +874,6 @@ html{
     }
 
 }
-
-
-/* ===========================
-      RESPONSIVE MOBILE
-=========================== */
 
 @media(max-width:768px){
 
@@ -1225,11 +938,6 @@ html{
 
 }
 
-
-/* ===========================
-      RESPONSIVE CELULAR
-=========================== */
-
 @media(max-width:480px){
 
     .hero-poster{
@@ -1271,9 +979,6 @@ html{
     }
 
 }
-/* ==========================================================
-   USER PANEL
-========================================================== */
 
 .hero-user-panel{
 
@@ -1307,7 +1012,7 @@ html{
 
 .panel-item label, 
 .panel-item strong {
-    color: #a0aec0; /* Un gris sutil para los títulos internos */
+    color: #a0aec0; 
     font-size: 14px;
     font-weight: 600;
     margin: 0;
@@ -1396,8 +1101,8 @@ html{
     background: #20293d;
     border: 1px solid #33435f;
     border-radius: 10px;
-    padding: 0 10px; /* Reducido un poco para dar aire */
-    height: 46px; /* Misma altura que el select */
+    padding: 0 10px; 
+    height: 46px; 
 }
 
 .episode-counter span {
@@ -1484,10 +1189,6 @@ html{
 
 }
 
-/*==========================
-STATUS
-==========================*/
-
 .status-pill{
 
     width:max-content;
@@ -1511,10 +1212,6 @@ STATUS
     letter-spacing:.3px;
 
 }
-
-/*==========================
-SCORE
-==========================*/
 
 .score-stars{
 
@@ -1553,20 +1250,12 @@ SCORE
     font-weight:700;
 
 }
-
-/*====================================
-
-QUICK ACTIONS
-
-====================================*/
-
 .quick-actions {
     display: grid;
-    /* Cambiado de 5 a 4 para que se dividan el 100% del ancho exacto */
     grid-template-columns: repeat(4, 1fr); 
     gap: 15px;
     margin-top: 25px;
-    width: 100%; /* Asegura que tome todo el ancho del contenedor */
+    width: 100%; 
 }
 
 .quick-actions h4{
@@ -1582,7 +1271,7 @@ QUICK ACTIONS
 }
 
 .quick-action-btn {
-    width: 100%; /* Hace que cada botón llene su celda correspondiente del grid */
+    width: 100%; 
     height: 46px;
     border: none;
     border-radius: 12px;
@@ -1615,21 +1304,13 @@ QUICK ACTIONS
 .quick-action-btn:hover {
     background: #2f61ff;
     color: white;
-    transform: translateY(-2px); /* Cambiado a subir un poquito en vez de ir a la derecha, queda más premium */
+    transform: translateY(-2px); 
 }
 
 .quick-action-btn.active:hover {
     background: #ff4b4b;
     color: white;
 }
-
-/*================================================
-
-RELATED ANIME
-
-================================================*/
-
-
 .related-grid{
 
     display:grid;
@@ -1697,12 +1378,6 @@ RELATED ANIME
     font-size:13px;
 
 }
-/*====================================
-
-MAIN CHARACTERS
-
-====================================*/
-
 .characters-section{
 
     margin-top:60px;
@@ -1823,11 +1498,6 @@ MAIN CHARACTERS
     transform:scale(1.08);
 
 }
-
-/* ===========================
-        WHY WATCH
-=========================== */
-
 .whywatch-grid{
 
     display:grid;
@@ -1896,10 +1566,6 @@ MAIN CHARACTERS
     font-size:15px;
 
 }
-/* ===========================
-      OPENINGS / ENDINGS
-=========================== */
-
 .music-list{
 
     display:flex;
@@ -2010,10 +1676,6 @@ MAIN CHARACTERS
     transform:scale(1.2);
 
 }
-/* ===========================
-      PRODUCTION
-=========================== */
-
 .production-grid{
 
     display:grid;
@@ -2075,12 +1737,6 @@ MAIN CHARACTERS
     color:white;
 
 }
-
-
-/* ===========================
-      OFFICIAL LINKS
-=========================== */
-
 .official-links{
 
     display:flex;
@@ -2133,10 +1789,6 @@ MAIN CHARACTERS
     opacity:.8;
 
 }
-/* ===========================
-      COMMUNITY REVIEWS
-=========================== */
-
 .reviews-description{
 
     color:#AEB8D8;
@@ -2318,10 +1970,6 @@ MAIN CHARACTERS
     border-color:#4C82FF;
 
 }
-/* ===========================
-      REVIEW FORM
-=========================== */
-
 .review-form{
 
     margin-top:40px;
@@ -2441,10 +2089,6 @@ MAIN CHARACTERS
     justify-content:flex-end;
 
 }
-/* ===========================
-      MY STATUS
-=========================== */
-
 .status-selector{
 
     display:flex;
@@ -2514,11 +2158,6 @@ MAIN CHARACTERS
     color:white;
 
 }
-
-/* ===========================
-        YOUR LIST
-=========================== */
-
 .user-list-card{
 
     display:flex;
@@ -2657,21 +2296,16 @@ MAIN CHARACTERS
     display:inline-block;
 
 }
-
-/* ===========================
-        USER SCORE
-=========================== */
-
 .score-selector {
     display: flex;
-    justify-content: space-between; /* Distribuye del 1 al 10 a lo ancho */
+    justify-content: space-between; 
     gap: 4px;
-    height: 46px; /* Alineado con los demás */
+    height: 46px; 
     align-items: center;
 }
 
 .score-btn {
-    flex: 1; /* Hace que todos los botones midan exactamente lo mismo */
+    flex: 1; 
     height: 32px;
     background: #20293d;
     border: 1px solid #33435f;
@@ -2719,43 +2353,35 @@ MAIN CHARACTERS
     font-weight:600;
 
 }
-/* Contenedor general de respuestas */
 .review-replies-section {
-    margin-left: 54px; /* Alineado justo abajo del texto del comentario principal */
+    margin-left: 54px;
     margin-top: 15px;
     
     padding-left: 15px;
 }
-
-/* Lista de respuestas */
 .replies-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
-
-/* Tarjeta de cada respuesta individual */
 .reply-item {
-    background-color: rgba(255, 255, 255, 0.04); /* Fondo oscuro semitransparente */
+    background-color: rgba(255, 255, 255, 0.04); 
     padding: 10px 14px;
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Encabezado de la respuesta (Avatar + Nombre + Fecha) */
 .reply-user-info {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 6px;
 }
-
-/* Avatar mini para las respuestas */
 .reply-avatar-mini {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background-color: #3b82f6; /* Color de respaldo */
+    background-color: #3b82f6; 
     color: #fff;
     display: flex;
     align-items: center;
@@ -2764,38 +2390,30 @@ MAIN CHARACTERS
     font-weight: bold;
     overflow: hidden;
 }
-
 .reply-avatar-mini img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
 .reply-username {
     font-size: 0.9rem;
     color: #ffffff;
 }
-
 .reply-date {
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.4);
 }
-
-/* Texto de la respuesta */
 .reply-body-text {
     margin: 0;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.85); /* Texto legible en fondo oscuro */
+    color: rgba(255, 255, 255, 0.85); 
     line-height: 1.4;
 }
-
-/* --- Formulario de respuesta --- */
 .reply-form-box {
     margin-top: 12px;
     display: flex;
     gap: 10px;
 }
-
 .reply-input-field {
     flex: 1;
     padding: 8px 12px;
@@ -2807,11 +2425,9 @@ MAIN CHARACTERS
     outline: none;
     transition: border-color 0.2s;
 }
-
 .reply-input-field:focus {
     border-color: #3b82f6;
 }
-
 .reply-send-btn {
     padding: 8px 16px;
     background-color: #3b82f6;
@@ -2823,11 +2439,9 @@ MAIN CHARACTERS
     cursor: pointer;
     transition: background-color 0.2s;
 }
-
 .reply-send-btn:hover:not(:disabled) {
     background-color: #2563eb;
 }
-
 .reply-send-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -2847,16 +2461,14 @@ MAIN CHARACTERS
     }
     .score-circle {
         display: flex !important;
-        flex-direction: column !important; /* Mantiene "8.73" arriba de "Score" */
-        justify-content: center !important; /* Centrado vertical */
-        align-items: center !important;     /* Centrado horizontal */
+        flex-direction: column !important; 
+        justify-content: center !important; 
+        align-items: center !important;    
         text-align: center !important;
-        
-        /* Aseguramos que mantenga su forma circular */
         width: 120px !important;
         height: 120px !important;
         border-radius: 50% !important;
-        margin: 0 auto !important;          /* Centrado absoluto en su fila */
+        margin: 0 auto !important;         
     }
     .hero-top img{
         display: none;
@@ -2866,7 +2478,7 @@ MAIN CHARACTERS
         order: 1;
     }
     .detail-sidebar {
-        /* 🌟 Cambiamos el orden para que se renderice antes que el contenido principal (.detail-main) */
+        
         order: -1 !important;
     }
     .your-list-section {

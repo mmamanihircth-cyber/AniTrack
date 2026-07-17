@@ -32,15 +32,13 @@
   font-size: 0.7rem;
   font-weight: bold;
 }
-
-/* Caja Flotante */
 .notifications-dropdown {
   position: absolute;
   right: 0;
   top: 100%;
   margin-top: 8px;
   width: 320px;
-  background-color: #1e1e24; /* Color oscuro que pega con tu UI */
+  background-color: #1e1e24; 
   border: 1px solid #2d2d34;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -68,13 +66,11 @@
   font-weight: bold;
 }
 
-/* Área de Scroll - Limitada a ~5 elementos */
 .notifications-scroll {
-  max-height: 280px; /* Alto ideal para aprox 5 notificaciones */
+  max-height: 280px; 
   overflow-y: auto;
 }
 
-/* Scrollbar estética */
 .notifications-scroll::-webkit-scrollbar {
   width: 6px;
 }
@@ -82,8 +78,6 @@
   background-color: #3b3b44;
   border-radius: 4px;
 }
-
-/* Cada Item */
 .dropdown-item {
   display: flex;
   padding: 12px;
@@ -99,7 +93,7 @@
 }
 
 .dropdown-item.unread {
-  background-color: rgba(167, 139, 250, 0.05); /* Toque violeta sutil para no leídas */
+  background-color: rgba(167, 139, 250, 0.05); 
 }
 
 .item-icon {

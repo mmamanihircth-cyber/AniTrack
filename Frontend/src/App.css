@@ -7,5 +7,5 @@
 body, html {
   width: 100%;
   height: 100%;
-  background-color: #0c0d12; /* Evita destellos blancos al recargar */
+  background-color: #0c0d12; 
 }
