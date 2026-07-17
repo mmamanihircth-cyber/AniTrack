@@ -77,8 +77,8 @@ body{
 
 }
 .avatar-img-mini {
-    width: 100%;
-    height: 100%;
+    width:38px;
+    height:38px;
     object-fit: cover;    /* Clave: escala y centra la imagen sin deformarla */
     border-radius: 50%;
 }
